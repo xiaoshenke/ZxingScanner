@@ -4,6 +4,7 @@
 本库在google zxing的官方demo上进行了改造。只需几行代码就可以轻松集成zxing的二维码扫描功能。
 
 使用方法。
+
 1 class Your-Activity extends AppCompatActivity implements IDecodeResultHandler, IQRCodeScaner
 
 2 在activity的onCreate函数中初始化ZxingScannerImpl
