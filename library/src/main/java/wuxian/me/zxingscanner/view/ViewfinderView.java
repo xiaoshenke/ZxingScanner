@@ -32,7 +32,6 @@ import com.google.zxing.ResultPoint;
 import java.util.Collection;
 import java.util.HashSet;
 
-import wuxian.me.zxingscanner.R;
 import wuxian.me.zxingscanner.camera.CameraManager;
 
 /**

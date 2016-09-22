@@ -21,7 +21,6 @@ import java.util.Vector;
 
 import wuxian.me.zxingscanner.camera.CameraManager;
 import wuxian.me.zxingscanner.decoding.DecodeThread;
-import wuxian.me.zxingscanner.decoding.IDecodeResultHandler;
 import wuxian.me.zxingscanner.view.ViewfinderResultPointCallback;
 import wuxian.me.zxingscanner.view.ViewfinderView;
 
@@ -30,22 +29,17 @@ import static android.content.Context.VIBRATOR_SERVICE;
 
 /**
  * Created by wuxian on 25/8/2016.
- * <p>
- * scanner的实现类。activity只需传入context,surfaceview,viewerfinderview,以及结果回调即可
- * <p>
- * 应该具备的能力
- * 1 扫描框开始扫描(同时解析线程开始工作) --> 需要摄像头(surfaceview),需要扫描框(viewfinderview)
- * 2 扫描框停止扫描
- * 3 扫描框重新开始扫描
- * 4 摄像头应该是全屏的。而且只有屏幕退到后台或不可见的时候摄像头才需要关闭。其它情况不管是否正在进行扫描(解析),摄像头都应该是打开的
- * 5 在实现中。扫描框的扫描动作和实际解析线程的动作应该是同步的,扫描框停止扫描的时候,解析线程也应该停止或暂停。
  *
- * //Todo:紧急情况被系统干掉的实现
+ * QRCode Scanner Implementation class.
+ *
+ * It implements these functions
+ * 1 scanner begin to scan
+ * 2 scanner stop scan
+ * 3 decoding thread decode in background and notify QRCode scanner after producing result
  *
  */
 
-public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
-
+public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycle {
     public enum State {
         PREVIEW, SUCCESS, DONE
     }
@@ -97,7 +91,7 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
 
         mResultHandler = new IDecodeResultHandler() {
             @Override
-            public void handleDecodeSuccess(Result result, Bitmap bitmap) {  //扫描结束时的"bee"声音应该在这里控制
+            public void handleDecodeSuccess(Result result, Bitmap bitmap) {
                 playBeep();
                 playVibrate();
 
@@ -111,9 +105,7 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
             }
         };
         mManager = new ScanProcessManager();
-
-
-        initSurfaceView();  //按理说应该放在onResume过程 但是surfaceview是一个异步过程 因此放在构造函数中
+        initSurfaceView();
     }
 
     /**
@@ -126,12 +118,12 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
         initVibrator();
 
         startDecodeThread();
-        if (mHasSurface) {             //从后台切入前台 mHasSurface为true,因此这里打开相机并且开始scan
+        if (mHasSurface) {
             initCamera();
             startScan();
         }
 
-        mSurfaceView.requestFocus(); //???
+        mSurfaceView.requestFocus();
     }
 
     /**
@@ -147,14 +139,6 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
         quitDecodeThread();
     }
 
-    /**
-     * scan的实现包括扫描框和扫描线程。
-     * 因此调用这个函数之前应该确保
-     * 1 摄像机已经打开并正常工作
-     * 2 扫描线程已经打开并正常工作
-     * <p>
-     * 3 当前state为State.SUCCESS ????
-     */
     private void scanInternal() {
         if (mManager.getCurrentState() == State.SUCCESS) {
             mManager.setState(State.PREVIEW);
@@ -225,7 +209,7 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
     }
 
     private void initCamera() {
-        CameraManager.init(mContext.getApplicationContext());  //单例初始化
+        CameraManager.init(mContext.getApplicationContext());
         try {
             CameraManager.get().openDriver(mSurfaceHolder);
 
@@ -239,7 +223,7 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
     }
 
     private void destroyCamera() {
-        CameraManager.get().stopPreview();  //摄像机抓取的图片不再绘制在surfaceview
+        CameraManager.get().stopPreview();
         CameraManager.get().destory();
     }
 
@@ -285,7 +269,7 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
         if (mMediaPlayer == null) {
             ((Activity) mContext).setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-            mMediaPlayer = new MediaPlayer();  //mMediaPlayer.destroy()?
+            mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -310,7 +294,9 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
         }
     }
 
-
+    /**
+     * decode result handler
+     */
     public class ScanProcessManager extends Handler {
         private State mCurrentState;
 
@@ -332,7 +318,7 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifeCycle {
                 restartScan();
             }else if(message.what == R.id.decode_succeeded){
                 mCurrentState = State.SUCCESS;
-                stopScan();   //停止扫描
+                stopScan();
 
                 Bundle bundle = message.getData();
                 Bitmap barcode = bundle == null ? null : (Bitmap) bundle

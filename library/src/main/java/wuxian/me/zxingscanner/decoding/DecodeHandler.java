@@ -50,8 +50,7 @@ final class DecodeHandler extends Handler {
     }
 
     /**
-     * 停止DecodeThread线程方法 --> 发送R.id.quit message
-     *
+     * Method of stopping the decoding thread is send message R.id.quit message to your handler
      * @param message
      */
     @Override

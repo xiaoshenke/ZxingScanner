@@ -16,7 +16,6 @@
 
 package wuxian.me.zxingscanner.view;
 
-
 import com.google.zxing.ResultPoint;
 import com.google.zxing.ResultPointCallback;
 

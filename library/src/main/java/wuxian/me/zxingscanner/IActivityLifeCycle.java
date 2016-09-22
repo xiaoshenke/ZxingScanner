@@ -2,10 +2,28 @@ package wuxian.me.zxingscanner;
 
 /**
  * Created by wuxian on 26/8/2016.
+ *
+ * Interface monit Android Activity LifeCycle
  */
 
-public interface IActivityLifeCycle {
-    void onActivityResume();    //activity resume的时候一般来说需要重新开启摄像头 扫描线程,扫描框等
+public interface IActivityLifecycle {
+    /**
+     * activity onResume的时候应该调用一下这个函数
+     *
+     * 在这个函数中应该做以下事情
+     * 1 重新开启摄像头
+     * 2 开启扫描线程 开启扫描框
+     *
+     */
+    void onActivityResume();
 
-    void onActivityPause();     //activity pause 关闭摄像头 停止扫描线程,扫描框
+    /**
+     * activity onPause的时候应该调用一下这个函数
+     *
+     * 在这个函数中应该做以下事情
+     * 1 关闭摄像头
+     * 2 停止扫描线程 扫描框
+     *
+     */
+    void onActivityPause();
 }
