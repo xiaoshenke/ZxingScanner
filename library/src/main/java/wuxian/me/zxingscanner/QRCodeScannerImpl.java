@@ -218,8 +218,11 @@ public final class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycl
     }
 
     private void destroyCamera() {
-        CameraManager.get().stopPreview();
-        CameraManager.get().destory();
+        if (CameraManager.get() != null) {
+            CameraManager.get().stopPreview();
+            CameraManager.get().destory();
+        }
+
     }
 
 
