@@ -1,20 +1,62 @@
 # ZxingScanner
-二维码是android开发中一个非常常用的模块。
+A QRCode scanner library base on google [zxing](https://github.com/zxing/zxing).                       
+QRCode scan function is so common in an Android Application development,but zxing demo is difficult to use,and you have to modify many code.That is why I create this library.                     
+ZXingScanner is base on zxing,but much easier to use.You can interate QRCode scann funtion in just a few lines.                        
 
-本库在google zxing的官方demo上进行了改造。只需几行代码就可以轻松集成zxing的二维码扫描功能。
+Step
+1 add camera permission.In your AndroidManifest.xml          
 
-使用方法。
+````
+<uses-permission android:name="android.permission.CAMERA" />
+````                                     
+2 In your activity/fragment/view xml file,add SurfaceView and ViewfinderView node.                 
 
-1 class Your-Activity extends AppCompatActivity implements IDecodeResultHandler, IQRCodeScaner
+````
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-2 在activity的onCreate函数中初始化ZxingScannerImpl
-  mQRCodeScanner = new QRCodeScannerImpl(mContext, mSurfaceView, mViewfinderView, this);
-  最后一个参数是IDecodeResultHandler。扫描结果回调。
-  
-3 activity的onResume,onPause函数中记得调用一下mQRCodeScanner.onActivityResume,onActivityPause.在onActivityResume的时候正式进行扫描工作。
+    <SurfaceView
+        android:id="@+id/surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
 
-4 在IQRCodeScaner的三个接口startScan,stopScan,restartScan中分别调用mQRCodeScanner.startScan,stopScan,restartScan即可。
+    <wuxian.me.zxingscanner.view.ViewfinderView
+        android:id="@+id/viewfinder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+</FrameLayout>
+````
+3 create a ZxingScannerImpl variable in your activity.        
+           
+````
+mQRCodeScanner = new QRCodeScannerImpl(mSurfaceView, mViewfinderView, mDecodeResultHandler);
+````
+the third paramer is the qrcode result callback.
 
-Try it out yourself!
+4 call mQRCodeScanner.onActivityResume,onActivityPause in activity's lifecycle.                         
+
+````
+    @Override
+    public void onResume() {
+        super.onResume();
+        mQRCodeScanner.onActivityResume();  //don't forget to call this!
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mQRCodeScanner.onActivityPause();   //don't forget to call this!
+    }
+````
+
+wola,now you have successfully integrated QRCode function to your application!            
+
+If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
+
+Check the code to know more details !
 
 

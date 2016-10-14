@@ -4,7 +4,7 @@ import com.google.zxing.ResultPoint;
 
 /**
  * Created by wuxian on 14/10/2016.
- *
+ * <p>
  * Interface of Viewfinder view.
  * a viewfinder should be able to
  * 1 drawViewfinder  --> a red or whatever color line scan from top down
