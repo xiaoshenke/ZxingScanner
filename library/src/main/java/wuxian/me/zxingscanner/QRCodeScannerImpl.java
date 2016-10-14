@@ -29,24 +29,23 @@ import static android.content.Context.VIBRATOR_SERVICE;
 
 /**
  * Created by wuxian on 25/8/2016.
- *
+ * <p>
  * QRCode Scanner Implementation class.
- *
+ * <p>
  * It implements these functions
  * 1 scanner begin to scan
  * 2 scanner stop scan
  * 3 decoding thread decode in background and notify QRCode scanner after producing result
- *
  */
 
-public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycle {
+public final class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycle {
     public enum State {
         PREVIEW, SUCCESS, DONE
     }
 
     private ScanProcessManager mManager;
     private Context mContext;
-    
+
     private Vector<BarcodeFormat> mDecodeFormats;
 
     private IDecodeResultHandler mResultHandler;
@@ -71,23 +70,24 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycle {
             if (!mHasSurface) {
                 mHasSurface = true;
                 initCamera();
-
                 startScan();
             }
         }
+
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         }
+
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
             mHasSurface = false;
         }
     };
 
-    public QRCodeScannerImpl(Context context, SurfaceView surfaceView, ViewfinderView viewfinderView, final IDecodeResultHandler handler) {
-        mContext = context;
+    public QRCodeScannerImpl(SurfaceView surfaceView, ViewfinderView viewfinderView, final IDecodeResultHandler handler) {
         mSurfaceView = surfaceView;
         mViewfinderView = viewfinderView;
+        mContext = mViewfinderView.getContext();
 
         mResultHandler = new IDecodeResultHandler() {
             @Override
@@ -98,10 +98,6 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycle {
                 if (handler != null) {
                     handler.handleDecodeSuccess(result, bitmap);
                 }
-            }
-
-            @Override
-            public void handleDecodeFail() {
             }
         };
         mManager = new ScanProcessManager();
@@ -212,7 +208,6 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycle {
         CameraManager.init(mContext.getApplicationContext());
         try {
             CameraManager.get().openDriver(mSurfaceHolder);
-
             CameraManager.get().startPreview();
         } catch (IOException e) {
             return;
@@ -237,7 +232,6 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycle {
     private void playVibrate() {
         mVibrator.vibrate(VIBRATE_DURATION);
     }
-
 
 
     private void initSurfaceView() {
@@ -310,13 +304,13 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycle {
 
         @Override
         public void handleMessage(Message message) {
-            if(message.what == R.id.auto_focus){
+            if (message.what == R.id.auto_focus) {
                 if (mCurrentState == QRCodeScannerImpl.State.PREVIEW) {
                     CameraManager.get().requestAutoFocus(this, R.id.auto_focus);
                 }
-            }else if(message.what == R.id.restart_preview){
+            } else if (message.what == R.id.restart_preview) {
                 restartScan();
-            }else if(message.what == R.id.decode_succeeded){
+            } else if (message.what == R.id.decode_succeeded) {
                 mCurrentState = State.SUCCESS;
                 stopScan();
 
@@ -326,7 +320,7 @@ public class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycle {
                 if (mResultHandler != null) {
                     mResultHandler.handleDecodeSuccess((Result) message.obj, barcode);
                 }
-            }else if(message.what == R.id.decode_failed){
+            } else if (message.what == R.id.decode_failed) {
                 mCurrentState = State.PREVIEW;
                 if (mDecodeThread == null) {
                     return;

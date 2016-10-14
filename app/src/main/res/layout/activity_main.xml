@@ -20,10 +20,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="30dip"
+        android:layout_marginBottom="30dp"
         android:gravity="center"
-        android:textSize="18sp"
-        android:textColor="@android:color/white"
         android:text="scan this"
-         />
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
 </FrameLayout>

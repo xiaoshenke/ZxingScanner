@@ -5,7 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.SurfaceView;
+import android.widget.Toast;
+
 import com.google.zxing.Result;
+
 import wuxian.me.zxingscanner.QRCodeScannerImpl;
 import wuxian.me.zxingscanner.IDecodeResultHandler;
 import wuxian.me.zxingscanner.decoding.InactivityTimer;
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements IDecodeResultHand
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        mQRCodeScanner = new QRCodeScannerImpl(this, mSurfaceView, mViewfinderView, this);
+        mQRCodeScanner = new QRCodeScannerImpl(mSurfaceView, mViewfinderView, this);
     }
 
     private void initView() {
@@ -47,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements IDecodeResultHand
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         if (mTimer != null) {
             mTimer.shutdown();
@@ -67,12 +70,12 @@ public class MainActivity extends AppCompatActivity implements IDecodeResultHand
                 mTimer.shutdown();
                 mTimer = null;
             }
-            //Todo:add your code here
+            //replace your code
+            Toast.makeText(this, "QRCode is " + code, Toast.LENGTH_LONG).show();
+        } else {
+            //something bad happens --> you can call mQRCodeScanner.restartScan
         }
 
     }
 
-    @Override
-    public void handleDecodeFail() {
-    }
 }
