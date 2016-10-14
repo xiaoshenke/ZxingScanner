@@ -13,12 +13,12 @@ import wuxian.me.zxingscanner.QRCodeScannerImpl;
 import wuxian.me.zxingscanner.IDecodeResultHandler;
 import wuxian.me.zxingscanner.decoding.InactivityTimer;
 import wuxian.me.zxingscanner.demo.R;
-import wuxian.me.zxingscanner.view.ViewfinderView;
+import wuxian.me.zxingscanner.view.ScanView;
 
 
 public class MainActivity extends AppCompatActivity implements IDecodeResultHandler {
 
-    private ViewfinderView mViewfinderView;
+    private ScanView mScanView;
     private SurfaceView mSurfaceView;
     private InactivityTimer mTimer;
     private QRCodeScannerImpl mQRCodeScanner;
@@ -28,12 +28,12 @@ public class MainActivity extends AppCompatActivity implements IDecodeResultHand
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        mQRCodeScanner = new QRCodeScannerImpl(mSurfaceView, mViewfinderView, this);
+        mQRCodeScanner = new QRCodeScannerImpl(mSurfaceView, mScanView, this);
     }
 
     private void initView() {
         mSurfaceView = (SurfaceView) findViewById(R.id.surface);
-        mViewfinderView = (ViewfinderView) findViewById(R.id.viewfinder);
+        mScanView = (ScanView) findViewById(R.id.viewfinder);
         mTimer = new InactivityTimer(this);
     }
 

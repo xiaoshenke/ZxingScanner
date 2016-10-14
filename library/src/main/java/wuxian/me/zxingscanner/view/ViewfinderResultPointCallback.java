@@ -21,9 +21,9 @@ import com.google.zxing.ResultPointCallback;
 
 public final class ViewfinderResultPointCallback implements ResultPointCallback {
 
-    private final IViewfinder viewfinderView;
+    private final IScanView viewfinderView;
 
-    public ViewfinderResultPointCallback(IViewfinder viewfinderView) {
+    public ViewfinderResultPointCallback(IScanView viewfinderView) {
         this.viewfinderView = viewfinderView;
     }
 
