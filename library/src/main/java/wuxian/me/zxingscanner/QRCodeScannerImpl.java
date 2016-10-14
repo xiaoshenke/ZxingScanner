@@ -22,7 +22,7 @@ import java.util.Vector;
 import wuxian.me.zxingscanner.camera.CameraManager;
 import wuxian.me.zxingscanner.decoding.DecodeThread;
 import wuxian.me.zxingscanner.view.ViewfinderResultPointCallback;
-import wuxian.me.zxingscanner.view.ViewfinderView;
+import wuxian.me.zxingscanner.view.IViewfinder;
 
 import static android.content.Context.AUDIO_SERVICE;
 import static android.content.Context.VIBRATOR_SERVICE;
@@ -50,7 +50,7 @@ public final class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycl
 
     private IDecodeResultHandler mResultHandler;
     private SurfaceView mSurfaceView;
-    private ViewfinderView mViewfinderView;
+    private IViewfinder mViewfinderView;
 
     private boolean mHasSurface;
     private SurfaceHolder mSurfaceHolder;
@@ -84,10 +84,10 @@ public final class QRCodeScannerImpl implements IQRCodeScaner, IActivityLifecycl
         }
     };
 
-    public QRCodeScannerImpl(SurfaceView surfaceView, ViewfinderView viewfinderView, final IDecodeResultHandler handler) {
+    public QRCodeScannerImpl(SurfaceView surfaceView, IViewfinder viewfinderView, final IDecodeResultHandler handler) {
         mSurfaceView = surfaceView;
         mViewfinderView = viewfinderView;
-        mContext = mViewfinderView.getContext();
+        mContext = mSurfaceView.getContext();
 
         mResultHandler = new IDecodeResultHandler() {
             @Override

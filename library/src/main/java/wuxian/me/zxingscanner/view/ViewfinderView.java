@@ -41,7 +41,7 @@ import wuxian.me.zxingscanner.camera.CameraManager;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class ViewfinderView extends View {
+public final class ViewfinderView extends View implements IViewfinder{
 
     private static final int[] SCANNER_ALPHA = {0, 64, 128, 192, 255, 192,
             128, 64};
@@ -213,12 +213,14 @@ public final class ViewfinderView extends View {
         }
     }
 
+    @Override
     public void drawViewfinder() {
         resultBitmap = null;
         showLine = true;
         invalidate();
     }
 
+    @Override
     public void stopDrawViewfinder() {
         showLine = false;
     }
@@ -239,6 +241,7 @@ public final class ViewfinderView extends View {
         invalidate();
     }
 
+    @Override
     public void addPossibleResultPoint(ResultPoint point) {
         possibleResultPoints.add(point);
     }
