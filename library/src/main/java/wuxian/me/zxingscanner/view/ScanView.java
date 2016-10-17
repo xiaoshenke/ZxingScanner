@@ -32,6 +32,7 @@ import com.google.zxing.ResultPoint;
 import java.util.Collection;
 import java.util.HashSet;
 
+import wuxian.me.zxingscanner.R;
 import wuxian.me.zxingscanner.camera.CameraManager;
 
 public final class ScanView extends View implements IScanView {
@@ -73,9 +74,9 @@ public final class ScanView extends View implements IScanView {
                 center, right}
         );
         Resources resources = getResources();
-        //maskColor = resources.getColor(R.color.black_alpha50);  //Todo
-        //resultColor = resources.getColor(R.color.black_alpha50);  //Todo
-        //resultPointColor = resources.getColor(R.color.possible_result_points);  //Todo
+        maskColor = resources.getColor(R.color.black_alpha50);
+        resultColor = resources.getColor(R.color.black_alpha50);
+        resultPointColor = resources.getColor(R.color.possible_result_points);
         scannerAlpha = 0;
         possibleResultPoints = new HashSet<ResultPoint>(5);
     }
@@ -103,7 +104,7 @@ public final class ScanView extends View implements IScanView {
             canvas.drawBitmap(resultBitmap, frame.left, frame.top, paint);
         } else {
 
-            paint.setColor(getContext().getResources().getColor(android.R.color.black));//Todo
+            paint.setColor(getContext().getResources().getColor(android.R.color.black));
             // 画出四个角
             canvas.drawRect(frame.left - 10, frame.top - 10, frame.left + 20,
                     frame.top, paint);
@@ -126,11 +127,6 @@ public final class ScanView extends View implements IScanView {
             int middle = frame.width() / 2;
             textPaint.setTextSize(20);
             textPaint.setColor(Color.WHITE);
-            //String text = getResources().getString(
-            //        R.string.tip_dim_code_scanning_1);
-            String text = "scan ";
-            // canvas.drawText(text, middle - 112, frame.bottom + 60,
-            // textPaint);
 
             // Draw a red "laser scanner" line through the middle to show
             // decoding is active
@@ -140,11 +136,9 @@ public final class ScanView extends View implements IScanView {
 
             // 上下走的线
             if (laserLinePortrait) {
-
                 if (!showLine) {
                     return;
                 }
-
 
                 if ((i += 5) < frame.bottom - frame.top) {
                     /*
@@ -179,22 +173,16 @@ public final class ScanView extends View implements IScanView {
                 paint.setAlpha(OPAQUE);
                 paint.setColor(resultPointColor);
                 for (ResultPoint point : currentPossible) {
-                    // canvas.drawCircle(frame.left + point.getX(), frame.top +
-                    // point.getY(), 6.0f, paint);
-					/*
-					 * canvas.drawCircle(frame.left + point.getY(), frame.top +
-					 * point.getX(), 6.0f, paint);
-					 */
+                     canvas.drawCircle(frame.left + point.getX(), frame.top +
+                     point.getY(), 6.0f, paint);
                 }
             }
             if (currentLast != null) {
                 paint.setAlpha(OPAQUE / 2);
                 paint.setColor(resultPointColor);
                 for (ResultPoint point : currentLast) {
-					/*
-					 * canvas.drawCircle(frame.left + point.getX(), frame.top +
-					 * point.getY(), 3.0f, paint);
-					 */
+                    canvas.drawCircle(frame.left + point.getX(), frame.top +
+                            point.getY(), 3.0f, paint);
                 }
             }
 
