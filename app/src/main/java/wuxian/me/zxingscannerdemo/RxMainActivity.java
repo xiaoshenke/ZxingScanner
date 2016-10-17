@@ -1,16 +1,11 @@
 package wuxian.me.zxingscannerdemo;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
-import com.google.zxing.Result;
-
 import rx.functions.Action1;
-import wuxian.me.zxingscanner.IDecodeResultHandler;
 import wuxian.me.zxingscanner.decoding.InactivityTimer;
 import wuxian.me.zxingscanner.demo.R;
 import wuxian.me.zxingscanner.rx.RxQRCodeScanner;

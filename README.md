@@ -8,6 +8,8 @@ Step
 
 ````
 <uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.VIBRATE" />
+
 ````                                     
 2 In your activity/fragment/view xml file,add SurfaceView and ViewfinderView node.                 
 
@@ -58,7 +60,8 @@ wola,now you have successfully integrated QRCode function to your application!
 If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
 
 ##Todo             
-* support RxJava         
+* ~~support RxJava~~
+* add [RxLifecycle](https://github.com/trello/RxLifecycle)     
  
 
 Check the code to know more details !

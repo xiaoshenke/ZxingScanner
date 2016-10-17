@@ -14,10 +14,9 @@ import wuxian.me.zxingscanner.view.IScanView;
 
 /**
  * Created by wuxian on 17/10/2016.
- * Todo: to be finished
  */
 
-public class RxQRCodeScanner implements IRXScanner{
+public class RxQRCodeScanner implements IRXScanner {
     private static RxQRCodeScanner scanner;
     private SurfaceView mSurfaceView;
     private IScanView mScanView;
@@ -25,30 +24,27 @@ public class RxQRCodeScanner implements IRXScanner{
 
     private QRCodeScannerImpl impl;
 
-    private RxQRCodeScanner(){
-        ;
-    }
+    private RxQRCodeScanner() {}
 
-    public static RxQRCodeScanner getInstance(){
-        if(scanner == null){
+    public static RxQRCodeScanner getInstance() {
+        if (scanner == null) {
             scanner = new RxQRCodeScanner();
         }
 
         return scanner;
     }
 
-    public RxQRCodeScanner surfaceView(SurfaceView surfaceView){
+    public RxQRCodeScanner surfaceView(SurfaceView surfaceView) {
         mSurfaceView = surfaceView;
         return this;
     }
 
-    public RxQRCodeScanner scanView(IScanView scanView){
+    public RxQRCodeScanner scanView(IScanView scanView) {
         mScanView = scanView;
         return this;
     }
 
-    private IDecodeResultHandler generateHandler(final SingleSubscriber<? super String> subscriber){
-
+    private IDecodeResultHandler generateHandler(final SingleSubscriber<? super String> subscriber) {
         IDecodeResultHandler result = new IDecodeResultHandler() {
             @Override
             public void handleDecodeSuccess(Result result, Bitmap bitmap) {
@@ -68,20 +64,19 @@ public class RxQRCodeScanner implements IRXScanner{
 
     @Override
     public Single<String> scan() {
-        if(mSurfaceView == null){
+        if (mSurfaceView == null) {
             throw new IllegalArgumentException("surfaceview is null");
         }
-        if(mScanView == null){
+        if (mScanView == null) {
             throw new IllegalArgumentException("scanview is null");
         }
 
-        return Single.create(new Single.OnSubscribe<String>(){
-
+        return Single.create(new Single.OnSubscribe<String>() {
             @Override
             public void call(SingleSubscriber<? super String> singleSubscriber) {
-                if(impl == null){
+                if (impl == null) {
                     mResult = generateHandler(singleSubscriber);
-                    impl = new QRCodeScannerImpl(mSurfaceView,mScanView,mResult);
+                    impl = new QRCodeScannerImpl(mSurfaceView, mScanView, mResult);
                     impl.onActivityResume();
                 }
             }
