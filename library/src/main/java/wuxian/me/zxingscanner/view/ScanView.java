@@ -142,7 +142,7 @@ public final class ScanView extends View implements IScanView {
 
                 if ((i += 5) < frame.bottom - frame.top) {
                     /*
-					 * canvas.drawRect(frame.left + 2, frame.top - 2 + i,
+                     * canvas.drawRect(frame.left + 2, frame.top - 2 + i,
 					 * frame.right - 1, frame.top + 2 + i, paint);
 					 */
                     int r = 8;
@@ -173,8 +173,8 @@ public final class ScanView extends View implements IScanView {
                 paint.setAlpha(OPAQUE);
                 paint.setColor(resultPointColor);
                 for (ResultPoint point : currentPossible) {
-                     canvas.drawCircle(frame.left + point.getX(), frame.top +
-                     point.getY(), 6.0f, paint);
+                    canvas.drawCircle(frame.left + point.getX(), frame.top +
+                            point.getY(), 6.0f, paint);
                 }
             }
             if (currentLast != null) {
