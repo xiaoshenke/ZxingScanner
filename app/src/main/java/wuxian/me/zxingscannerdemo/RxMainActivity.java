@@ -9,10 +9,11 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
+import rx.functions.Action1;
 import wuxian.me.zxingscanner.IDecodeResultHandler;
-import wuxian.me.zxingscanner.QRCodeScannerImpl;
 import wuxian.me.zxingscanner.decoding.InactivityTimer;
 import wuxian.me.zxingscanner.demo.R;
+import wuxian.me.zxingscanner.rx.RxQRCodeScanner;
 import wuxian.me.zxingscanner.view.ScanView;
 
 
@@ -29,6 +30,12 @@ public class RxMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
 
+        RxQRCodeScanner.getInstance().surfaceView(mSurfaceView).scanView(mScanView).scan().subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+                Toast.makeText(RxMainActivity.this,"qrcode is "+s,Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void initView() {
