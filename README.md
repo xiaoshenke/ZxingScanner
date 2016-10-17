@@ -57,6 +57,10 @@ wola,now you have successfully integrated QRCode function to your application!
 
 If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
 
+##Todo             
+* support RxJava         
+ 
+
 Check the code to know more details !
 
 
