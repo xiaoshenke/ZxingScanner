@@ -36,10 +36,14 @@ dependencies {
 
     compile 'io.reactivex:rxjava:1.1.9'
 
+    compile 'com.google.android.agera:agera:1.2.0-beta2'
+
+    /*
     compile 'com.trello:rxlifecycle:0.8.0'
     // If you want to bind to Android-specific lifecycles
     compile 'com.trello:rxlifecycle-android:0.8.0'
     // If you want pre-written Activities and Fragments you can subclass as providers
     compile 'com.trello:rxlifecycle-components:0.8.0'
+    */
 
 }

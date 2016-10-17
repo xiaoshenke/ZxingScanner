@@ -19,7 +19,7 @@ public class RxQRCodeScanner implements IRXScanner {
     private static RxQRCodeScanner scanner;
     private SurfaceView mSurfaceView;
     private IScanView mScanView;
-    private IDecodeResultHandler mResult;
+    private IDecodeResultHandler mHandler;
 
     private QRCodeScannerImpl impl;
 
@@ -81,8 +81,8 @@ public class RxQRCodeScanner implements IRXScanner {
             @Override
             public void call(SingleSubscriber<? super String> singleSubscriber) {
                 if (impl == null) {
-                    mResult = generateHandler(singleSubscriber);
-                    impl = new QRCodeScannerImpl(mSurfaceView, mScanView, mResult);
+                    mHandler = generateHandler(singleSubscriber);
+                    impl = new QRCodeScannerImpl(mSurfaceView, mScanView, mHandler);
                     impl.onActivityResume();
                 }
             }
