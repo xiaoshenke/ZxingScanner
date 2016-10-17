@@ -2,12 +2,17 @@ package wuxian.me.zxingscanner.rx;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.google.zxing.Result;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import rx.Single;
 import rx.SingleSubscriber;
+import rx.functions.Action1;
 import wuxian.me.zxingscanner.IDecodeResultHandler;
 import wuxian.me.zxingscanner.QRCodeScannerImpl;
 import wuxian.me.zxingscanner.view.IScanView;
@@ -49,7 +54,6 @@ public class RxQRCodeScanner implements IRXScanner {
             @Override
             public void handleDecodeSuccess(Result result, Bitmap bitmap) {
                 final String code = result.getText().trim();
-
                 if (!TextUtils.isEmpty(code)) {
                     subscriber.onSuccess(code);
                 } else {
@@ -71,7 +75,7 @@ public class RxQRCodeScanner implements IRXScanner {
             throw new IllegalArgumentException("scanview is null");
         }
 
-        return Single.create(new Single.OnSubscribe<String>() {
+        Single<String> single =  Single.create(new Single.OnSubscribe<String>() {
             @Override
             public void call(SingleSubscriber<? super String> singleSubscriber) {
                 if (impl == null) {
@@ -81,5 +85,7 @@ public class RxQRCodeScanner implements IRXScanner {
                 }
             }
         });
+
+        return single;
     }
 }

@@ -83,6 +83,9 @@ public final class ScanView extends View implements IScanView {
 
     @Override
     public void onDraw(Canvas canvas) {
+        if(CameraManager.get() == null){
+            return;
+        }
         Rect frame = CameraManager.get().getFramingRectForDraw();
         if (frame == null) {
             return;
