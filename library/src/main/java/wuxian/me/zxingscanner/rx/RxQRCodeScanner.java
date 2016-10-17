@@ -2,17 +2,11 @@ package wuxian.me.zxingscanner.rx;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import com.google.zxing.Result;
-import com.trello.rxlifecycle.android.ActivityEvent;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
-
 import rx.Single;
 import rx.SingleSubscriber;
-import rx.functions.Action1;
 import wuxian.me.zxingscanner.IDecodeResultHandler;
 import wuxian.me.zxingscanner.QRCodeScannerImpl;
 import wuxian.me.zxingscanner.view.IScanView;
@@ -29,7 +23,8 @@ public class RxQRCodeScanner implements IRXScanner {
 
     private QRCodeScannerImpl impl;
 
-    private RxQRCodeScanner() {}
+    private RxQRCodeScanner() {
+    }
 
     public static RxQRCodeScanner getInstance() {
         if (scanner == null) {
@@ -65,6 +60,13 @@ public class RxQRCodeScanner implements IRXScanner {
         return result;
     }
 
+    @Override
+    public void stop() {
+        if (impl != null) {
+            impl.onActivityPause();
+        }
+    }
+
 
     @Override
     public Single<String> scan() {
@@ -75,7 +77,7 @@ public class RxQRCodeScanner implements IRXScanner {
             throw new IllegalArgumentException("scanview is null");
         }
 
-        Single<String> single =  Single.create(new Single.OnSubscribe<String>() {
+        Single<String> single = Single.create(new Single.OnSubscribe<String>() {
             @Override
             public void call(SingleSubscriber<? super String> singleSubscriber) {
                 if (impl == null) {

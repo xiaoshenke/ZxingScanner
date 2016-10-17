@@ -8,4 +8,6 @@ import rx.Single;
 
 public interface IRXScanner {
     Single<String> scan();
+
+    void stop();
 }

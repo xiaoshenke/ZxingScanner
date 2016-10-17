@@ -1,10 +1,10 @@
 package wuxian.me.zxingscannerdemo;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import rx.functions.Action1;
 import wuxian.me.zxingscanner.decoding.InactivityTimer;
 import wuxian.me.zxingscanner.demo.R;
@@ -12,7 +12,7 @@ import wuxian.me.zxingscanner.rx.RxQRCodeScanner;
 import wuxian.me.zxingscanner.view.ScanView;
 
 
-public class RxMainActivity extends RxAppCompatActivity {
+public class RxMainActivity extends AppCompatActivity {
 
     private ScanView mScanView;
     private SurfaceView mSurfaceView;
@@ -23,12 +23,7 @@ public class RxMainActivity extends RxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        RxQRCodeScanner.getInstance().surfaceView(mSurfaceView).scanView(mScanView).scan().subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-                Toast.makeText(RxMainActivity.this,"qrcode is "+s,Toast.LENGTH_LONG).show();
-            }
-        });
+
     }
 
     private void initView() {
@@ -40,11 +35,20 @@ public class RxMainActivity extends RxAppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        RxQRCodeScanner.getInstance().surfaceView(mSurfaceView).scanView(mScanView).scan().subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+                Toast.makeText(RxMainActivity.this, "qrcode is " + s, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
+        RxQRCodeScanner.getInstance().stop();
     }
 
     @Override
