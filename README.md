@@ -61,7 +61,7 @@ If you aren't satisfied with the sanner ui,you can implement IViewfinder to cust
 
 ##Todo             
 * ~~support [RxJava](https://github.com/ReactiveX/RxJava)~~
-* support [agera](https://github.com/google/agera)
+* ~~support [agera](https://github.com/google/agera)~~
 * add [RxLifecycle](https://github.com/trello/RxLifecycle)     
  
 
