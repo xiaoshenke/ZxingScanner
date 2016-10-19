@@ -3,8 +3,8 @@ A QRCode scanner library base on google [zxing](https://github.com/zxing/zxing).
 QRCode scan function is so common in an Android Application development,but zxing demo is difficult to use,and you have to modify many code.That is why I create this library.                     
 ZXingScanner is base on zxing,but much easier to use.You can interate QRCode scann funtion in just a few lines.                        
 
-Step
-1 add camera permission.In your AndroidManifest.xml          
+##  Base version
+Step 1 add camera permission.In your AndroidManifest.xml          
 
 ````
 <uses-permission android:name="android.permission.CAMERA" />
@@ -55,8 +55,43 @@ the third paramer is the qrcode result callback.
     }
 ````
 
-wola,now you have successfully integrated QRCode function to your application!            
+wola,now you have successfully integrated QRCode function to your application!  
 
+##  RxJava version
+you still have to do step1 and step2.
+step3, In your onResume method,add these code                   
+
+````
+RxQRCodeScanner.getInstance().surfaceView(mSurfaceView).scanView(mScanView).scan().subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {  //replace your code here
+                Toast.makeText(RxMainActivity.this, "qrcode is " + s, Toast.LENGTH_LONG).show();
+            }
+        });
+````
+##  Agera version
+you still have to do step1 and step2.                        
+
+step3, init a QRCodeScannerRepository,and in resume method call addUpdatable method.                   
+
+````
+mRepository = new QRCodeScannerRepository().surfaceView(mSurfaceView).scanView(mScanView);
+mRepository.addUpdatable(this);      
+````
+step4, don't forget let your activity/fragment/view implement Updatable interface,because that is the qrcode scan result callback.           
+
+````
+class AgeraMainActivity extends AppCompatActivity implements Updatable
+
+@Override
+    public void update() { //replace your code here
+        Toast.makeText(this,"qrcode is "+mRepository.get(),Toast.LENGTH_LONG).show();
+    }
+      
+````
+
+##  Other
+        
 If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
 
 ##Todo             
