@@ -2,6 +2,8 @@ package wuxian.me.zxingscanner.agera.camera;
 
 import android.hardware.Camera;
 
+import java.io.IOException;
+
 /**
  * Created by wuxian on 20/10/2016.
  * <p>
@@ -17,4 +19,12 @@ public interface ICamera {
     void startPreview();
 
     void stopPreview();
+
+    void requestPreview();
+
+    void requestAutoFocus();
+
+    void openCamera() throws IOException;
+
+    void closeCamera();
 }

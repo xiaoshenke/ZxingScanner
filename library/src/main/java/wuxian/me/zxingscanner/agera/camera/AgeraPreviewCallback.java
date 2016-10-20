@@ -17,6 +17,10 @@ public class AgeraPreviewCallback implements Camera.PreviewCallback {
     private Handler previewHandler;
     private int previewMessage;
 
+    AgeraPreviewCallback(){
+        this(null,false);
+    }
+
     AgeraPreviewCallback(CameraConfigurationManager configManager,
                     boolean useOneShotPreviewCallback) {
         this.configManager = configManager;
