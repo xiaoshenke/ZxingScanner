@@ -7,14 +7,17 @@ import android.widget.Toast;
 
 import com.google.android.agera.Updatable;
 
-import rx.functions.Action1;
 import wuxian.me.zxingscanner.agera.QRCodeScannerRepository;
-import wuxian.me.zxingscanner.decoding.InactivityTimer;
 import wuxian.me.zxingscanner.demo.R;
-import wuxian.me.zxingscanner.rx.RxQRCodeScanner;
 import wuxian.me.zxingscanner.view.ScanView;
 
-public class AgeraMainActivity extends AppCompatActivity implements Updatable{
+/**
+ * Created by wuxian on 18/10/2016.
+ *
+ * Todo:try Agera inner build Repositories.
+ *
+ */
+public class AgeraMainActivity extends AppCompatActivity implements Updatable {
 
     private ScanView mScanView;
     private SurfaceView mSurfaceView;
@@ -51,6 +54,6 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable{
 
     @Override
     public void update() {
-        Toast.makeText(this,"qrcode is "+mRepository.get(),Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "qrcode is " + mRepository.get(), Toast.LENGTH_LONG).show();
     }
 }

@@ -15,6 +15,9 @@ import wuxian.me.zxingscanner.view.IScanView;
 
 /**
  * Created by wuxian on 18/10/2016.
+ *
+ * Todo:让activity成为一个observable,onResume,onPause的时候自动触发事件
+ *
  */
 
 public class QRCodeScannerRepository extends BaseObservable implements Supplier<String> {
@@ -70,6 +73,13 @@ public class QRCodeScannerRepository extends BaseObservable implements Supplier<
             mHandler = generateHandler();
             impl = new QRCodeScannerImpl(mSurfaceView, mScanView, mHandler);
             impl.onActivityResume();
+        }
+    }
+
+    @Override
+    protected void observableDeactivated() {
+        if(impl != null){
+            impl.onActivityPause();
         }
     }
 
