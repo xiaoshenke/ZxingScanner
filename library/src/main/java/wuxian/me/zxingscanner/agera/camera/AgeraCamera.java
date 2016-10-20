@@ -21,17 +21,14 @@ import wuxian.me.zxingscanner.camera.PreviewCallback;
  * Created by wuxian on 20/10/2016.
  */
 
-public class AgeraCameraManager {
-
-
-    private static final String TAG = AgeraCameraManager.class.getSimpleName();
-
+public class AgeraCamera implements ICamera {
+    private static final String TAG = AgeraCamera.class.getSimpleName();
     private static final int MIN_FRAME_WIDTH = 240;
     private static final int MIN_FRAME_HEIGHT = 240;
     private static final int MAX_FRAME_WIDTH = 480;
     private static final int MAX_FRAME_HEIGHT = 360;
 
-    private static AgeraCameraManager cameraManager;
+    private static AgeraCamera cameraManager;
 
     static final int SDK_INT; // Later we can use Build.VERSION.SDK_INT
 
@@ -74,20 +71,20 @@ public class AgeraCameraManager {
      */
     public static void init(Context context) {
         if (cameraManager == null) {
-            cameraManager = new AgeraCameraManager(context);
+            cameraManager = new AgeraCamera(context);
         }
     }
 
     /**
-     * Gets the AgeraCameraManager singleton instance.
+     * Gets the AgeraCamera singleton instance.
      *
-     * @return A reference to the AgeraCameraManager singleton.
+     * @return A reference to the AgeraCamera singleton.
      */
-    public static AgeraCameraManager get() {
+    public static AgeraCamera get() {
         return cameraManager;
     }
 
-    private AgeraCameraManager(Context context) {
+    private AgeraCamera(Context context) {
 
         this.context = context;
         this.configManager = new CameraConfigurationManager(context);
@@ -142,6 +139,11 @@ public class AgeraCameraManager {
             camera.release();
             camera = null;
         }
+    }
+
+    @Override
+    public void setPreviewCallback(Camera.PreviewCallback callback) {
+        //Todo
     }
 
     /**

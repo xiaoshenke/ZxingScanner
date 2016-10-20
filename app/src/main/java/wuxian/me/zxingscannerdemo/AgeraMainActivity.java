@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
+import com.google.android.agera.Repositories;
+import com.google.android.agera.Result;
 import com.google.android.agera.Updatable;
 
 import wuxian.me.zxingscanner.agera.QRCodeScannerRepository;
@@ -41,15 +43,16 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
     @Override
     public void onResume() {
         super.onResume();
+        //mRepository.addUpdatable(this);
 
-        mRepository.addUpdatable(this);
+        //Repositories.repositoryWithInitialValue(Result.<String>absent()).observe()
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        mRepository.removeUpdatable(this);
+        //mRepository.removeUpdatable(this);
     }
 
     @Override

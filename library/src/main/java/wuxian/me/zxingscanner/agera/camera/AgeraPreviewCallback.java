@@ -12,9 +12,6 @@ import wuxian.me.zxingscanner.camera.CameraConfigurationManager;
  */
 
 public class AgeraPreviewCallback implements Camera.PreviewCallback {
-
-    private static final String TAG = Camera.PreviewCallback.class.getSimpleName();
-
     private final CameraConfigurationManager configManager;
     private final boolean useOneShotPreviewCallback;
     private Handler previewHandler;
@@ -31,6 +28,13 @@ public class AgeraPreviewCallback implements Camera.PreviewCallback {
         this.previewMessage = previewMessage;
     }
 
+    /**
+     * 这里应该向cameraObservable输出截图
+     *
+     * @param data
+     * @param camera
+     */
+    @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         Point cameraResolution = configManager.getCameraResolution();
         if (!useOneShotPreviewCallback) {
@@ -44,6 +48,11 @@ public class AgeraPreviewCallback implements Camera.PreviewCallback {
         } else {
             //Log.d(TAG, "Got preview callback, but no handler for it");
         }
+
+        PreviewRepository.getInstance().setPreviewData(new PreviewRepository.PreviewData(cameraResolution, data));
+        PreviewRepository.getInstance().addUpdatable(null);
     }
+
+
 
 }
