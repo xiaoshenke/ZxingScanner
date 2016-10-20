@@ -1,9 +1,11 @@
 package wuxian.me.zxingscanner.agera;
 
+import android.content.Context;
+import android.graphics.PixelFormat;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.agera.BaseObservable;
 import com.google.android.agera.Function;
@@ -12,21 +14,28 @@ import com.google.android.agera.Repository;
 import com.google.android.agera.Result;
 import com.google.android.agera.Supplier;
 import com.google.android.agera.Updatable;
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.common.HybridBinarizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Vector;
 
 import wuxian.me.zxingscanner.agera.camera.AgeraCamera;
 import wuxian.me.zxingscanner.agera.camera.AgeraPreviewCallback;
 import wuxian.me.zxingscanner.agera.camera.ICamera;
 import wuxian.me.zxingscanner.agera.camera.OnNewpreview;
 import wuxian.me.zxingscanner.agera.camera.PreviewData;
+import wuxian.me.zxingscanner.camera.CameraConfigurationManager;
 import wuxian.me.zxingscanner.camera.PlanarYUVLuminanceSource;
+import wuxian.me.zxingscanner.decoding.DecodeFormatManager;
+import wuxian.me.zxingscanner.view.ViewfinderResultPointCallback;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
@@ -40,6 +49,8 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
  * 调用到CameraRepository.addUpdatable的时候开启 流程池。
  * <p>
  * 流程池每一个线程是由 camera的previewcallback发起的。
+ * <p>
+ * Todo: add autofocus callback code, add SurfaceView and test if the code will work
  */
 
 public class QRCodeCameraRepository extends BaseObservable implements Supplier<String>, Updatable, OnNewpreview {
@@ -47,6 +58,12 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     private ICamera camera;
     private String qrcode = "";
     private boolean inLoop = false;
+    private Context context;
+
+    public QRCodeCameraRepository(Context context) {
+        this.context = context;
+
+    }
 
     private List<Repository> mPreviewRepos = new ArrayList<>();
 
@@ -59,7 +76,7 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
      * 打开摄像头 此时android内置的camera会定时发送"照片截图" --> decode线程解析
      */
     private void runCameraLoop() {
-        camera = AgeraCamera.getInstance();
+        camera = AgeraCamera.getInstance(context);
         try {
             camera.openCamera();
         } catch (IOException e) {
@@ -88,12 +105,12 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     }
 
     /**
-     * one previewRepo has returned qrcode string
+     * one of these previewRepo has returned qrcode string
      * <p>
      * Todo: verify if is right
      */
     @Override
-    public synchronized void update() {
+    public void update() {
         for (Repository rep : mPreviewRepos) {
             if (rep.get() == Result.<String>absent()) {
                 continue;
@@ -134,12 +151,16 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     }
 
     private class PreviewToStringFunction implements Function<PreviewData, Result<String>> {
-        //Todo init
-        MultiFormatReader reader = new MultiFormatReader();
 
-        //Todo
-        PlanarYUVLuminanceSource getSourceFromPreviewData(PreviewData data) {
-            return null;
+        MultiFormatReader reader;
+
+        public PreviewToStringFunction() {
+            init();
+        }
+
+        private void init() {
+            reader = new MultiFormatReader();
+            reader.setHints(getDefaultHints());
         }
 
         @NonNull
@@ -159,17 +180,14 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
             width = height;
             height = tmp;
             data = rotatedData;
-            long start = System.currentTimeMillis();
-            com.google.zxing.Result rawResult = null;
 
-            PlanarYUVLuminanceSource source = getSourceFromPreviewData(input);
+            com.google.zxing.Result rawResult = null;
+            PlanarYUVLuminanceSource source = getSourceFromPreviewData(new PreviewData(new Point(width, height), data));
 
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
             try {
                 rawResult = reader.decodeWithState(bitmap);
             } catch (ReaderException re) {
-                // continue
-
                 return Result.failure();
             } finally {
                 reader.reset();
@@ -184,6 +202,101 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
             }
 
             return Result.failure();
+        }
+
+        private Rect getFramingRect() {
+            CameraConfigurationManager configManager = AgeraCamera.getInstance(context).getConfigManager();
+            if (configManager == null) {
+                return null;
+            }
+
+            Point screenResolution = configManager.getScreenResolution();
+            Rect framingRect;
+            int width = screenResolution.x;
+            int height = screenResolution.y;
+
+            int leftOffset = (screenResolution.x - width) / 2;
+            int topOffset = (screenResolution.y - height) / 3;
+            framingRect = new Rect(leftOffset, topOffset, leftOffset + width,
+                    topOffset + height);
+            return framingRect;
+        }
+
+        private Rect getFramingRectInPreview() {
+            Rect frameRect = getFramingRect();
+            if (frameRect == null) {
+                return null;
+            }
+
+            CameraConfigurationManager configManager = AgeraCamera.getInstance(context).getConfigManager();
+
+            Rect rect = new Rect(frameRect);
+            Point cameraResolution = configManager.getCameraResolution();
+            Point screenResolution = configManager.getScreenResolution();
+            rect.left = rect.left * cameraResolution.y / screenResolution.x;
+            rect.right = rect.right * cameraResolution.y / screenResolution.x;
+            rect.top = rect.top * cameraResolution.x / screenResolution.y;
+            rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;
+
+            return rect;
+        }
+
+        private PlanarYUVLuminanceSource getSourceFromPreviewData(PreviewData previewData) {
+            CameraConfigurationManager configManager = AgeraCamera.getInstance(context).getConfigManager();
+            if (configManager == null) {
+                return null;
+            }
+
+            byte[] data = previewData.data;
+            int width = previewData.resolution.x;
+            int height = previewData.resolution.y;
+
+            Rect rect = getFramingRectInPreview();
+            int previewFormat = configManager.getPreviewFormat();
+            String previewFormatString = configManager.getPreviewFormatString();
+            switch (previewFormat) {
+                // This is the standard Android format which all devices are REQUIRED to
+                // support.
+                // In theory, it's the only one we should ever care about.
+                case PixelFormat.YCbCr_420_SP:
+                    // This format has never been seen in the wild, but is compatible as
+                    // we only care
+                    // about the Y channel, so allow it.
+                case PixelFormat.YCbCr_422_SP:
+                    return new PlanarYUVLuminanceSource(data, width, height, rect.left,
+                            rect.top, rect.width(), rect.height());
+                default:
+                    // The Samsung Moment incorrectly uses this variant instead of the
+                    // 'sp' version.
+                    // Fortunately, it too has all the Y data up front, so we can read
+                    // it.
+                    if ("yuv420p".equals(previewFormatString)) {
+                        return new PlanarYUVLuminanceSource(data, width, height,
+                                rect.left, rect.top, rect.width(), rect.height());
+                    }
+            }
+            throw new IllegalArgumentException("Unsupported picture format: "
+                    + previewFormat + '/' + previewFormatString);
+
+        }
+
+        Hashtable<DecodeHintType, Object> getDefaultHints() {
+            Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>();
+            Vector<BarcodeFormat> decodeFormats = new Vector<BarcodeFormat>();
+            decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
+            decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
+            decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
+            hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
+
+            String characterSet = null;
+            if (characterSet != null) {
+                hints.put(DecodeHintType.CHARACTER_SET, characterSet);
+            }
+
+            hints.put(DecodeHintType.NEED_RESULT_POINT_CALLBACK,
+                    new ViewfinderResultPointCallback(null));  //Todo: replace last parameter
+
+            return hints;
         }
     }
 }

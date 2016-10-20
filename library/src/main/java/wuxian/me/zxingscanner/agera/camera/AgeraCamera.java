@@ -1,9 +1,11 @@
 package wuxian.me.zxingscanner.agera.camera;
 
+import android.content.Context;
 import android.hardware.Camera;
 
 import java.io.IOException;
 
+import wuxian.me.zxingscanner.camera.CameraConfigurationManager;
 import wuxian.me.zxingscanner.camera.PlanarYUVLuminanceSource;
 
 /**
@@ -20,20 +22,24 @@ public class AgeraCamera implements ICamera {
     private boolean isPreviewing = false;
     private Camera.PreviewCallback mPreviewCallback;
 
-    private AgeraCamera(){
-        init();
+    private CameraConfigurationManager configManager;
+    private Context context;
+    private boolean initialized = false;
+
+    private AgeraCamera(Context context) {
+        this.context = context;
     }
 
-    private void init() {
-        ;//Todo init camera with default camera parameter
-    }
-
-    public static AgeraCamera getInstance(){
+    public static AgeraCamera getInstance(Context context) {
         if(ageraCamera == null){
-            ageraCamera = new AgeraCamera();
+            ageraCamera = new AgeraCamera(context);
         }
 
         return ageraCamera;
+    }
+
+    public CameraConfigurationManager getConfigManager() {
+        return configManager;
     }
 
     @Override
@@ -44,6 +50,15 @@ public class AgeraCamera implements ICamera {
             if(camera == null){
                 throw new IOException();
             }
+
+            if (!initialized) {
+                initialized = true;
+
+                this.configManager = new CameraConfigurationManager(context);
+                configManager.initFromCameraParameters(camera);
+            }
+
+            configManager.setDesiredCameraParameters(camera);
         }
     }
 
