@@ -29,7 +29,7 @@ import android.view.WindowManager;
 
 import java.util.regex.Pattern;
 
-final class CameraConfigurationManager {
+public final class CameraConfigurationManager {
 
     private static final String TAG = CameraConfigurationManager.class
             .getSimpleName();
@@ -46,14 +46,14 @@ final class CameraConfigurationManager {
     private String previewFormatString;
     private float screenDensity;
 
-    CameraConfigurationManager(Context context) {
+    public CameraConfigurationManager(Context context) {
         this.context = context;
     }
 
     /**
      * Reads, one time, values from the camera that are needed by the app.
      */
-    void initFromCameraParameters(Camera camera) {
+    public void initFromCameraParameters(Camera camera) {
         Camera.Parameters parameters = camera.getParameters();
         previewFormat = parameters.getPreviewFormat();
         previewFormatString = parameters.get("preview-format");
@@ -86,7 +86,7 @@ final class CameraConfigurationManager {
      * planar Y can be used for barcode scanning without a copy in some cases.
      */
     @SuppressLint("NewApi")
-    void setDesiredCameraParameters(Camera camera) {
+    public void setDesiredCameraParameters(Camera camera) {
         Camera.Parameters parameters = camera.getParameters();
         Log.d(TAG, "Camera resolution:222 " + cameraResolution);
         parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
@@ -97,19 +97,19 @@ final class CameraConfigurationManager {
         camera.setParameters(parameters);
     }
 
-    Point getCameraResolution() {
+    public Point getCameraResolution() {
         return cameraResolution;
     }
 
-    Point getScreenResolution() {
+    public Point getScreenResolution() {
         return screenResolution;
     }
 
-    int getPreviewFormat() {
+    public int getPreviewFormat() {
         return previewFormat;
     }
 
-    String getPreviewFormatString() {
+    public String getPreviewFormatString() {
         return previewFormatString;
     }
 
@@ -294,7 +294,7 @@ final class CameraConfigurationManager {
         }
     }
 
-    float getScreenDensity() {
+    public float getScreenDensity() {
         return screenDensity;
     }
 

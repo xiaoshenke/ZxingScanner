@@ -22,7 +22,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-final class PreviewCallback implements Camera.PreviewCallback {
+public final class PreviewCallback implements Camera.PreviewCallback {
 
     private static final String TAG = PreviewCallback.class.getSimpleName();
 
@@ -31,13 +31,13 @@ final class PreviewCallback implements Camera.PreviewCallback {
     private Handler previewHandler;
     private int previewMessage;
 
-    PreviewCallback(CameraConfigurationManager configManager,
+    public PreviewCallback(CameraConfigurationManager configManager,
                     boolean useOneShotPreviewCallback) {
         this.configManager = configManager;
         this.useOneShotPreviewCallback = useOneShotPreviewCallback;
     }
 
-    void setHandler(Handler previewHandler, int previewMessage) {
+    public void setHandler(Handler previewHandler, int previewMessage) {
         this.previewHandler = previewHandler;
         this.previewMessage = previewMessage;
     }
