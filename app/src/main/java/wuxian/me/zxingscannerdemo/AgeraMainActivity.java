@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceView;
 import android.widget.Toast;
-
-import com.google.android.agera.Repositories;
-import com.google.android.agera.Result;
 import com.google.android.agera.Updatable;
 
 import wuxian.me.zxingscanner.agera.QRCodeScannerRepository;
@@ -15,9 +12,6 @@ import wuxian.me.zxingscanner.view.ScanView;
 
 /**
  * Created by wuxian on 18/10/2016.
- *
- * Todo:try Agera inner build Repositories.
- *
  */
 public class AgeraMainActivity extends AppCompatActivity implements Updatable {
 
@@ -45,7 +39,6 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
         super.onResume();
         //mRepository.addUpdatable(this);
 
-        //Repositories.repositoryWithInitialValue(Result.<String>absent()).observe()
     }
 
     @Override

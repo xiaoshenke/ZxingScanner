@@ -56,12 +56,6 @@ public class AgeraCamera implements ICamera {
         }
     }
 
-    Camera.PreviewCallback getDefaultPreviewCallback(){
-        Camera.PreviewCallback cb = new AgeraPreviewCallback();
-        mPreviewCallback = cb;
-        return mPreviewCallback;
-    }
-
     @Override
     public void setPreviewCallback(Camera.PreviewCallback callback) {
         mPreviewCallback = callback;
@@ -75,9 +69,10 @@ public class AgeraCamera implements ICamera {
         if(camera != null && !isPreviewing){
             isPreviewing = true;
 
-            if(mPreviewCallback == null){
-                camera.setPreviewCallback(getDefaultPreviewCallback());
+            if (mPreviewCallback != null) {
+                camera.setPreviewCallback(mPreviewCallback);
             }
+
             camera.startPreview();
         }
 
