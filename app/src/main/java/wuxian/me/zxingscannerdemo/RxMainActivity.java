@@ -6,10 +6,10 @@ import android.view.SurfaceView;
 import android.widget.Toast;
 
 import rx.functions.Action1;
-import wuxian.me.zxingscanner.decoding.InactivityTimer;
+import wuxian.me.zxingscanner.normalversion.decoding.InactivityTimer;
 import wuxian.me.zxingscanner.demo.R;
-import wuxian.me.zxingscanner.rx.RxQRCodeScanner;
-import wuxian.me.zxingscanner.view.ScanView;
+import wuxian.me.zxingscanner.rxversion.RxQRCodeScanner;
+import wuxian.me.zxingscanner.share.view.ScanView;
 
 
 public class RxMainActivity extends AppCompatActivity {

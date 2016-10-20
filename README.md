@@ -25,7 +25,7 @@ Step 1 add camera permission.In your AndroidManifest.xml
         android:layout_height="match_parent"
         android:layout_gravity="center" />
 
-    <wuxian.me.zxingscanner.view.ViewfinderView
+    <wuxian.me.zxingscanner.base.view.ViewfinderView
         android:id="@+id/viewfinder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

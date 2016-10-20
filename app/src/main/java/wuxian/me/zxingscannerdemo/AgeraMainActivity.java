@@ -6,9 +6,9 @@ import android.view.SurfaceView;
 import android.widget.Toast;
 import com.google.android.agera.Updatable;
 
-import wuxian.me.zxingscanner.agera.QRCodeScannerRepository;
+import wuxian.me.zxingscanner.ageraversion.QRCodeScannerRepository;
 import wuxian.me.zxingscanner.demo.R;
-import wuxian.me.zxingscanner.view.ScanView;
+import wuxian.me.zxingscanner.share.view.ScanView;
 
 /**
  * Created by wuxian on 18/10/2016.

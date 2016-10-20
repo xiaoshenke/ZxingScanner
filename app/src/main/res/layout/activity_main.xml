@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center" />
 
-    <wuxian.me.zxingscanner.view.ScanView
+    <wuxian.me.zxingscanner.share.view.ScanView
         android:id="@+id/viewfinder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

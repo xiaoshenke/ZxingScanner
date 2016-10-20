@@ -9,11 +9,11 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
-import wuxian.me.zxingscanner.QRCodeScannerImpl;
-import wuxian.me.zxingscanner.IDecodeResultHandler;
-import wuxian.me.zxingscanner.decoding.InactivityTimer;
+import wuxian.me.zxingscanner.normalversion.QRCodeScannerImpl;
+import wuxian.me.zxingscanner.normalversion.IDecodeResultHandler;
+import wuxian.me.zxingscanner.normalversion.decoding.InactivityTimer;
 import wuxian.me.zxingscanner.demo.R;
-import wuxian.me.zxingscanner.view.ScanView;
+import wuxian.me.zxingscanner.share.view.ScanView;
 
 
 public class MainActivity extends AppCompatActivity implements IDecodeResultHandler {
