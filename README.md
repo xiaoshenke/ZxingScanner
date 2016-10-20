@@ -57,7 +57,7 @@ the third paramer is the qrcode result callback.
 
 wola,now you have successfully integrated QRCode function to your application!  
 
-##  RxJava version
+##  RxJava support
 you still have to do step1 and step2.
 step3, In your onResume method,add these code                   
 
@@ -69,7 +69,7 @@ RxQRCodeScanner.getInstance().surfaceView(mSurfaceView).scanView(mScanView).scan
             }
         });
 ````
-##  Agera version
+##  Agera support
 you still have to do step1 and step2.                        
 
 step3, init a QRCodeScannerRepository,and in resume method call addUpdatable method.                   
@@ -90,16 +90,15 @@ class AgeraMainActivity extends AppCompatActivity implements Updatable
       
 ````
 
-##  Other
-        
-If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
-
 ##Todo             
 * ~~support [RxJava](https://github.com/ReactiveX/RxJava)~~
 * ~~support [agera](https://github.com/google/agera)~~
-* enable Activity lifecyle control
-* add [RxLifecycle](https://github.com/trello/RxLifecycle)     
+* enable Activity lifecyle control   
  
+##  Other
+        
+* If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
+* In agera branch,the whole project is currently almost rewrited in agera style.
 
 Check the code to know more details !
 
