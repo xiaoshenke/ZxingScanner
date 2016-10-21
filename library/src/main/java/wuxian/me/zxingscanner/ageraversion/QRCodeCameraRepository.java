@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import wuxian.me.zxingscanner.ageraversion.camera.AgeraCamera;
 import wuxian.me.zxingscanner.ageraversion.camera.AgeraPreviewCallback;
@@ -54,8 +56,9 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
  * 流程池每一个线程是由 camera的previewcallback发起的。
  * <p>
  *
+ * Fixme: This version has some memory issure.
+ *
  * Todo: add ScanView
- * 
  */
 
 public class QRCodeCameraRepository extends BaseObservable implements Supplier<String>, Updatable, OnNewpreview {
@@ -75,7 +78,6 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
         public void surfaceCreated(SurfaceHolder holder) {
             surfaceHolder = holder;
             hasSurface = true;
-
             if (hasSurface && activated) {
                 runCameraLoop();
             }
@@ -112,7 +114,6 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     @Override
     protected void observableActivated() {
         activated = true;
-
         if (activated && hasSurface) {
             runCameraLoop();
         }
@@ -143,22 +144,42 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
         return Result.absent();
     }
 
+    private Executor executor;
+    private Executor getDefaultExecutor(){
+
+        if(executor == null){
+            executor = Executors.newFixedThreadPool(1);
+        }
+        return executor;
+    }
+
     @Override
     public void onNewPreview(PreviewData data) {
         Repository<Result<String>> repository = Repositories.repositoryWithInitialValue(getInitialResultValue())
-                .observe().onUpdatesPerLoop().goTo(newSingleThreadExecutor()).getFrom(new SimpleSuplier(data))
-                .thenTransform(new PreviewToStringFunction()).compile();
+                .observe()
+                .onUpdatesPerLoop()
+                .goTo(getDefaultExecutor())
+                .getFrom(new SimpleSuplier(data))
+                .thenTransform(new PreviewToStringFunction())
+                .compile();
         repository.addUpdatable(this);
 
         mPreviewRepos.add(repository);
     }
 
     /**
-     * one of these previewRepo has returned qrcode string
+     * "one" of these previewRepo has returned qrcode string
      *
-     * FixMe: can't remove updatable?? -->
+     * FixMe: can't remove updatable??
      *
-     * FixMe: out of memory,create too much thread.
+     * FixMe: out of memory,create too much thread. --> newPreview comes too fast,decode needs a lot of memory
+     *
+     * 原先的CameraManager的做法是前一张preview解析出来后"才"通知进行下一张preview的采集与解析
+     * --> 这样的话mPreviewRepo其实只需要一个了
+     * --> 而且这样的话可以重构成为一条repostory 没必要存在两个repository了 通过function来变幻即可
+     *
+     * if there is a better solution???
+     *
      */
     @Override
     public synchronized void update() {
@@ -176,6 +197,7 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
 
             cleanUp();
             dispatchUpdate();
+
             break;
         }
     }
