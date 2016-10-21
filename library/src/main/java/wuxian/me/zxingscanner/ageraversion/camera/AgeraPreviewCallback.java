@@ -19,19 +19,28 @@ public class AgeraPreviewCallback implements Camera.PreviewCallback {
         this.manager = manager;
     }
 
+    public void setOnNewpreview(OnNewpreview onNewpreview) {
+        this.onNewpreview = onNewpreview;
+    }
+
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         Log.e("previewCallback", "receive data");
-        if (manager == null) {
-            return;
-        }
-        Point point = manager.getCameraResolution();
 
-        if (onNewpreview == null) {
-            return;
-        }
+        if (onNewpreview != null) {
+            if (manager == null) {
+                return;
+            }
+            Point point = manager.getCameraResolution();
 
-        onNewpreview.onNewPreview(new PreviewData(point, data));
+            if (onNewpreview == null) {
+                return;
+            }
+
+            onNewpreview.onNewPreview(new PreviewData(point, data));
+
+            //onNewpreview = null;  //防止发送preview太过频繁 --> fixme???
+        }
     }
 
 }

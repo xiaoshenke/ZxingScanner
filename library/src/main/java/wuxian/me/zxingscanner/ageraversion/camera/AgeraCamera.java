@@ -2,10 +2,14 @@ package wuxian.me.zxingscanner.ageraversion.camera;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.os.Message;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
+import wuxian.me.zxingscanner.R;
 import wuxian.me.zxingscanner.share.CameraConfigurationManager;
 import wuxian.me.zxingscanner.share.PlanarYUVLuminanceSource;
 
@@ -93,6 +97,7 @@ public class AgeraCamera implements ICamera {
             }
 
             camera.startPreview();
+            requestAutoFocus();
         }
 
     }
@@ -106,9 +111,6 @@ public class AgeraCamera implements ICamera {
 
     }
 
-    /**
-     * 调用这个函数能够取到一张preview
-     */
     @Override
     public void requestPreview() {
         if(camera != null && isPreviewing){
@@ -116,21 +118,36 @@ public class AgeraCamera implements ICamera {
         }
     }
 
-    /**
-     * todo: add autofocus callback
-     */
+    private AgeraAutoFocusCallback autoFocusCallback;
+    private AutofocusHandler autofocusHandler;
+
     @Override
     public void requestAutoFocus() {
+        if (autoFocusCallback == null) {
+            autoFocusCallback = new AgeraAutoFocusCallback();
+        }
+
+        if (autofocusHandler == null) {
+            autofocusHandler = new AutofocusHandler();
+        }
+
         if(camera != null && isPreviewing){
-            camera.autoFocus(null);
+            autoFocusCallback.setHandler(autofocusHandler);
+            camera.autoFocus(autoFocusCallback);
         }
     }
 
     /**
-     * Todo
+     * keep auto focusing..
      */
-    public static PlanarYUVLuminanceSource buildLuminanceSource(byte[] data,
-                                                                int width, int height){
-        return null;
+    private class AutofocusHandler extends android.os.Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == R.id.auto_focus) {
+                requestAutoFocus();
+            }
+        }
     }
+
+
 }
