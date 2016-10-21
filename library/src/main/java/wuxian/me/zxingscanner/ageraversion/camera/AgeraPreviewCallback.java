@@ -13,6 +13,7 @@ import wuxian.me.zxingscanner.share.CameraConfigurationManager;
 public class AgeraPreviewCallback implements Camera.PreviewCallback {
     private OnNewpreview onNewpreview;
     private CameraConfigurationManager manager;
+    private boolean once = false;  //for test
 
     public AgeraPreviewCallback(CameraConfigurationManager manager, OnNewpreview onNewpreview) {
         this.onNewpreview = onNewpreview;
@@ -26,20 +27,14 @@ public class AgeraPreviewCallback implements Camera.PreviewCallback {
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         Log.e("previewCallback", "receive data");
-
-        if (onNewpreview != null) {
+        if (onNewpreview != null && true) {
+            once = true;
             if (manager == null) {
                 return;
             }
             Point point = manager.getCameraResolution();
-
-            if (onNewpreview == null) {
-                return;
-            }
-
             onNewpreview.onNewPreview(new PreviewData(point, data));
-
-            //onNewpreview = null;  //防止发送preview太过频繁 --> fixme???
+            //onNewpreview = null; //防止发送preview太过频繁 --> fixme???
         }
     }
 

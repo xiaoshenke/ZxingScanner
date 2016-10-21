@@ -15,8 +15,6 @@ import wuxian.me.zxingscanner.share.PlanarYUVLuminanceSource;
 
 /**
  * Created by wuxian on 20/10/2016.
- *
- * Todo: the camera should keep focusing... impl?
  */
 
 public class AgeraCamera implements ICamera {

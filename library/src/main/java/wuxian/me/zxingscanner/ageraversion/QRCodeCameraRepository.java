@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -52,10 +53,12 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
  * <p>
  * 流程池每一个线程是由 camera的previewcallback发起的。
  * <p>
- * Todo: add autofocus callback code and test if the code will work
+ * 
  */
 
 public class QRCodeCameraRepository extends BaseObservable implements Supplier<String>, Updatable, OnNewpreview {
+
+    private static final String TAG = "repository";
 
     private ICamera camera;
     private String qrcode = "";
@@ -131,38 +134,46 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     }
 
     @Override
-    public void onNewPreview(PreviewData data) {
-        /*
+    public synchronized void onNewPreview(PreviewData data) {
+
         Repository<Result<String>> repository = Repositories.repositoryWithInitialValue(Result.<String>absent())
                 .observe().onUpdatesPerLoop().goTo(newSingleThreadExecutor()).getFrom(new SimpleSuplier(data))
                 .thenTransform(new PreviewToStringFunction()).compile();
         repository.addUpdatable(this);
 
         mPreviewRepos.add(repository);
-        */
+
     }
 
     /**
      * one of these previewRepo has returned qrcode string
-     * <p>
-     * Todo: verify if is right
+     *
+     * Todo: fix can't remove updatable??
+     * Todo: after recognize qrcode, stop decoding?
+     * Todo: out of memory,too much thread?
      */
     @Override
-    public void update() {
+    public synchronized void update() {
+        Log.e(TAG,"in repository.update");
+
         for (Repository rep : mPreviewRepos) {
             if (rep.get() == Result.<String>absent()) {
+                Log.e(TAG,"absent");
                 continue;
             }
-
             if (rep.get() == Result.failure()) {
-                rep.removeUpdatable(this);
+                Log.e(TAG,"failure");
+                //rep.removeUpdatable(this);
                 continue;
             }
-            qrcode = (String) (((Result) rep.get()).get());
 
+            qrcode = (String) (((Result) rep.get()).get());
+            Log.e(TAG,"success? qrcode is "+qrcode);
             dispatchUpdate();
-            cleanUp();
+            break;
+            //cleanUp();
         }
+
     }
 
     private void cleanUp() {
@@ -184,6 +195,7 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
         @NonNull
         @Override
         public PreviewData get() {
+            Log.e(TAG,"simplesupplier.get is in thread: "+Thread.currentThread().getName());
             return data;
         }
     }
@@ -204,6 +216,7 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
         @NonNull
         @Override
         public Result<String> apply(@NonNull PreviewData input) {
+            Log.e(TAG,"previewToStringFunction.apply is in thread: "+Thread.currentThread().getName());
 
             byte[] data = input.data;
             int height = input.resolution.y;
