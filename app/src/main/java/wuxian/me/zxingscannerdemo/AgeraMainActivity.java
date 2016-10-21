@@ -6,6 +6,7 @@ import android.view.SurfaceView;
 import android.widget.Toast;
 import com.google.android.agera.Updatable;
 
+import wuxian.me.zxingscanner.ageraversion.QRCodeCameraRepository;
 import wuxian.me.zxingscanner.ageraversion.QRCodeScannerRepository;
 import wuxian.me.zxingscanner.demo.R;
 import wuxian.me.zxingscanner.share.view.ScanView;
@@ -18,7 +19,8 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
     private ScanView mScanView;
     private SurfaceView mSurfaceView;
 
-    private QRCodeScannerRepository mRepository;
+    //private QRCodeScannerRepository oldRepository;
+    private QRCodeCameraRepository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,8 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
         setContentView(R.layout.activity_main);
         initView();
 
-        mRepository = new QRCodeScannerRepository().surfaceView(mSurfaceView).scanView(mScanView);
+        //oldRepository = new QRCodeScannerRepository().surfaceView(mSurfaceView).scanView(mScanView);
+        repository = new QRCodeCameraRepository(this, mSurfaceView);
     }
 
     private void initView() {
@@ -37,19 +40,21 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
     @Override
     public void onResume() {
         super.onResume();
-        //mRepository.addUpdatable(this);
+        //oldRepository.addUpdatable(this);
 
+        repository.addUpdatable(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        //oldRepository.removeUpdatable(this);
 
-        //mRepository.removeUpdatable(this);
+        repository.removeUpdatable(this);
     }
 
     @Override
     public void update() {
-        Toast.makeText(this, "qrcode is " + mRepository.get(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "qrcode is " + oldRepository.get(), Toast.LENGTH_LONG).show();
     }
 }

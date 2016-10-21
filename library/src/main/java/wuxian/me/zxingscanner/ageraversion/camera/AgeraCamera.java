@@ -2,6 +2,7 @@ package wuxian.me.zxingscanner.ageraversion.camera;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.view.SurfaceHolder;
 
 import java.io.IOException;
 
@@ -38,18 +39,21 @@ public class AgeraCamera implements ICamera {
         return ageraCamera;
     }
 
+    @Override
     public CameraConfigurationManager getConfigManager() {
         return configManager;
     }
 
     @Override
-    public void openCamera() throws IOException{
+    public void openCamera(SurfaceHolder holder) throws IOException {
         if(camera == null){
             camera = Camera.open();
 
             if(camera == null){
                 throw new IOException();
             }
+
+            camera.setPreviewDisplay(holder);
 
             if (!initialized) {
                 initialized = true;

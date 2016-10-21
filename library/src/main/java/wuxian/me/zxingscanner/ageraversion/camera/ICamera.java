@@ -1,16 +1,14 @@
 package wuxian.me.zxingscanner.ageraversion.camera;
 
 import android.hardware.Camera;
+import android.view.SurfaceHolder;
 
 import java.io.IOException;
 
+import wuxian.me.zxingscanner.share.CameraConfigurationManager;
+
 /**
  * Created by wuxian on 20/10/2016.
- * <p>
- * a camera should be able to
- * 1 setCallback
- * 2 startPreview
- * 3 stopPreview
  */
 
 public interface ICamera {
@@ -24,7 +22,9 @@ public interface ICamera {
 
     void requestAutoFocus();
 
-    void openCamera() throws IOException;
+    void openCamera(SurfaceHolder holder) throws IOException;
 
     void closeCamera();
+
+    CameraConfigurationManager getConfigManager();
 }

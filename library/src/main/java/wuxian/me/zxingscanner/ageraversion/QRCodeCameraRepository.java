@@ -6,6 +6,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import com.google.android.agera.BaseObservable;
 import com.google.android.agera.Function;
@@ -50,7 +52,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
  * <p>
  * 流程池每一个线程是由 camera的previewcallback发起的。
  * <p>
- * Todo: add autofocus callback code, add SurfaceView and test if the code will work
+ * Todo: add autofocus callback code and test if the code will work
  */
 
 public class QRCodeCameraRepository extends BaseObservable implements Supplier<String>, Updatable, OnNewpreview {
@@ -59,33 +61,67 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     private String qrcode = "";
     private boolean inLoop = false;
     private Context context;
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
+    private boolean hasSurface = false;
+    private boolean activated = false;
 
-    public QRCodeCameraRepository(Context context) {
+    private SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+            surfaceHolder = holder;
+            hasSurface = true;
+
+            if (hasSurface && activated) {
+                runCameraLoop();
+            }
+        }
+
+        @Override
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            surfaceHolder = null;
+            hasSurface = false;
+        }
+    };
+
+    public QRCodeCameraRepository(Context context, SurfaceView surfaceView) {
         this.context = context;
 
+        this.surfaceView = surfaceView;
+        if (surfaceView == null) {
+            throw new IllegalArgumentException("surfaceview is null");
+        }
+        surfaceView.getHolder().addCallback(surfaceCallback);
     }
 
     private List<Repository> mPreviewRepos = new ArrayList<>();
 
     @Override
     protected void observableActivated() {
-        runCameraLoop();
+        activated = true;
+
+        if (activated && hasSurface) {
+            runCameraLoop();
+        }
     }
 
     /**
-     * 打开摄像头 此时android内置的camera会定时发送"照片截图" --> decode线程解析
+     * 打开摄像头 此时android内置的camera会定时发送"照片截图"
      */
     private void runCameraLoop() {
         camera = AgeraCamera.getInstance(context);
         try {
-            camera.openCamera();
+            camera.openCamera(surfaceHolder);
         } catch (IOException e) {
             return;
         }
-        camera.setPreviewCallback(new AgeraPreviewCallback(this));
+        camera.setPreviewCallback(new AgeraPreviewCallback(camera.getConfigManager(), this));
         inLoop = true;
         camera.startPreview();
-
     }
 
     @NonNull
@@ -96,12 +132,14 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
 
     @Override
     public void onNewPreview(PreviewData data) {
+        /*
         Repository<Result<String>> repository = Repositories.repositoryWithInitialValue(Result.<String>absent())
                 .observe().onUpdatesPerLoop().goTo(newSingleThreadExecutor()).getFrom(new SimpleSuplier(data))
                 .thenTransform(new PreviewToStringFunction()).compile();
         repository.addUpdatable(this);
 
         mPreviewRepos.add(repository);
+        */
     }
 
     /**
