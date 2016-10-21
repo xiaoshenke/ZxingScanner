@@ -55,6 +55,7 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
 
     @Override
     public void update() {
-        //Toast.makeText(this, "qrcode is " + oldRepository.get(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "qrcode is " + repository.get(), Toast.LENGTH_LONG).show();
+
     }
 }

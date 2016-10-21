@@ -53,22 +53,23 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
  * <p>
  * 流程池每一个线程是由 camera的previewcallback发起的。
  * <p>
+ *
+ * Todo: add ScanView
  * 
  */
 
 public class QRCodeCameraRepository extends BaseObservable implements Supplier<String>, Updatable, OnNewpreview {
-
     private static final String TAG = "repository";
 
     private ICamera camera;
     private String qrcode = "";
-    private boolean inLoop = false;
+
     private Context context;
-    private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private boolean hasSurface = false;
     private boolean activated = false;
 
+    private List<Repository> mPreviewRepos = new ArrayList<>();
     private SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
@@ -94,14 +95,19 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     public QRCodeCameraRepository(Context context, SurfaceView surfaceView) {
         this.context = context;
 
-        this.surfaceView = surfaceView;
         if (surfaceView == null) {
             throw new IllegalArgumentException("surfaceview is null");
         }
         surfaceView.getHolder().addCallback(surfaceCallback);
     }
 
-    private List<Repository> mPreviewRepos = new ArrayList<>();
+    @Override
+    protected void observableDeactivated() {
+        activated = false;
+        if (camera != null) {
+            camera.closeCamera();
+        }
+    }
 
     @Override
     protected void observableActivated() {
@@ -123,7 +129,6 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
             return;
         }
         camera.setPreviewCallback(new AgeraPreviewCallback(camera.getConfigManager(), this));
-        inLoop = true;
         camera.startPreview();
     }
 
@@ -133,24 +138,27 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
         return qrcode;
     }
 
-    @Override
-    public synchronized void onNewPreview(PreviewData data) {
+    private Result<String> getInitialResultValue() {
+        Log.e(TAG, "getInitialValue in " + Thread.currentThread().getName());
+        return Result.absent();
+    }
 
-        Repository<Result<String>> repository = Repositories.repositoryWithInitialValue(Result.<String>absent())
+    @Override
+    public void onNewPreview(PreviewData data) {
+        Repository<Result<String>> repository = Repositories.repositoryWithInitialValue(getInitialResultValue())
                 .observe().onUpdatesPerLoop().goTo(newSingleThreadExecutor()).getFrom(new SimpleSuplier(data))
                 .thenTransform(new PreviewToStringFunction()).compile();
         repository.addUpdatable(this);
 
         mPreviewRepos.add(repository);
-
     }
 
     /**
      * one of these previewRepo has returned qrcode string
      *
-     * Todo: fix can't remove updatable??
-     * Todo: after recognize qrcode, stop decoding?
-     * Todo: out of memory,too much thread?
+     * FixMe: can't remove updatable?? -->
+     *
+     * FixMe: out of memory,create too much thread.
      */
     @Override
     public synchronized void update() {
@@ -158,31 +166,39 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
 
         for (Repository rep : mPreviewRepos) {
             if (rep.get() == Result.<String>absent()) {
-                Log.e(TAG,"absent");
                 continue;
             }
             if (rep.get() == Result.failure()) {
-                Log.e(TAG,"failure");
-                //rep.removeUpdatable(this);
                 continue;
             }
 
             qrcode = (String) (((Result) rep.get()).get());
-            Log.e(TAG,"success? qrcode is "+qrcode);
+
+            cleanUp();
             dispatchUpdate();
             break;
-            //cleanUp();
         }
-
     }
 
+    /**
+     * we have get our qrcode,do some clean work.
+     * 1 remove all updatables.
+     * 2 stop decode thread
+     * 3 stop autofocus
+     */
     private void cleanUp() {
         for (Repository rep : mPreviewRepos) {
-            rep.removeUpdatable(this);
+            try {
+                rep.removeUpdatable(this);
+            } catch (IllegalStateException e) {
+                continue;
+            }
         }
         mPreviewRepos.clear();
 
-        //close camera???
+        if (camera != null) {
+            camera.stopPreview();  //Fixme: 调用stopPreview时会surfaceview会静止 但正确的行为应该是继续显示图片
+        }
     }
 
     private class SimpleSuplier implements Supplier<PreviewData> {

@@ -97,16 +97,17 @@ public class AgeraCamera implements ICamera {
             camera.startPreview();
             requestAutoFocus();
         }
-
     }
 
     @Override
     public void stopPreview() {
-        isPreviewing = false;
-        if(camera != null){
+        if (camera != null && isPreviewing) {
+            isPreviewing = false;
+            camera.setPreviewCallback(null);
+            camera.autoFocus(null);
+
             camera.stopPreview();
         }
-
     }
 
     @Override
