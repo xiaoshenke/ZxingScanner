@@ -59,6 +59,8 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
  * Fixme: This version has some memory issure.
  *
  * Todo: add ScanView
+ *
+ * Todo:最终还是选择了google demo的单线程版本
  */
 
 public class QRCodeCameraRepository extends BaseObservable implements Supplier<String>, Updatable, OnNewpreview {
