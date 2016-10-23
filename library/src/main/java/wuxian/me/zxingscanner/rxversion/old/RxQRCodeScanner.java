@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.rxversion;
+package wuxian.me.zxingscanner.rxversion.old;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;

@@ -8,7 +8,7 @@ import android.widget.Toast;
 import rx.functions.Action1;
 import wuxian.me.zxingscanner.normalversion.decoding.InactivityTimer;
 import wuxian.me.zxingscanner.demo.R;
-import wuxian.me.zxingscanner.rxversion.RxQRCodeScanner;
+import wuxian.me.zxingscanner.rxversion.old.RxQRCodeScanner;
 import wuxian.me.zxingscanner.share.view.ScanView;
 
 
