@@ -12,6 +12,7 @@ import android.view.SurfaceView;
 
 import com.google.android.agera.BaseObservable;
 import com.google.android.agera.Function;
+import com.google.android.agera.Receiver;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Result;
@@ -25,9 +26,7 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.common.HybridBinarizer;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -53,7 +52,7 @@ import wuxian.me.zxingscanner.share.view.ViewfinderResultPointCallback;
  * <p>
  * 流程池每一个线程是由 camera的previewcallback发起的。
  * <p>
- *
+ * <p>
  * Todo: add ScanView
  */
 
@@ -137,13 +136,13 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     }
 
     private Result<String> getInitialResultValue() {
-        Log.e(TAG, "getInitialValue in " + Thread.currentThread().getName());
         return Result.absent();
     }
 
     private Executor executor;
-    private Executor getDefaultExecutor(){
-        if(executor == null){
+
+    private Executor getDefaultExecutor() {
+        if (executor == null) {
             executor = Executors.newFixedThreadPool(1);
         }
         return executor;
@@ -151,11 +150,12 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
 
     /**
      * called by @AgeraPreviewCallback
+     *
      * @param data
      */
     @Override
     public void onNewPreview(PreviewData data) {
-        if(repository == null){
+        if (repository == null) {
             repository = Repositories.repositoryWithInitialValue(getInitialResultValue())
                     .observe()
                     .onUpdatesPerLoop()
@@ -170,8 +170,9 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
 
     @Override
     public synchronized void update() {
-        Log.e(TAG,"in repository.update");
+        Log.e(TAG, "in repository.update");
 
+        /*
         if(repository.get() == Result.failure()){
             camera.requestPreview(this);
         } else {
@@ -180,6 +181,23 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
             cleanUp();
             dispatchUpdate();
         }
+        */
+
+        repository.removeUpdatable(QRCodeCameraRepository.this);
+
+        ((Result) (repository.get())).ifFailedSendTo(new Receiver<Throwable>() {
+            @Override
+            public void accept(@NonNull Throwable value) {
+                camera.requestPreview(QRCodeCameraRepository.this);
+            }
+        }).ifSucceededSendTo(new Receiver() {
+            @Override
+            public void accept(@NonNull Object value) {
+                qrcode = (String) (((Result) repository.get()).get());
+                cleanUp();
+                dispatchUpdate();
+            }
+        });
     }
 
     /**
@@ -191,8 +209,6 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     private void cleanUp() {
         if (camera != null) {
             camera.stopPreview();  //Fixme: 调用stopPreview时会surfaceview会静止 但正确的行为应该是继续显示图片
-
-            repository.removeUpdatable(this);
         }
     }
 
@@ -206,13 +222,11 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
         @NonNull
         @Override
         public PreviewData get() {
-            Log.e(TAG,"simplesupplier.get is in thread: "+Thread.currentThread().getName());
             return data;
         }
     }
 
     private class PreviewToStringFunction implements Function<PreviewData, Result<String>> {
-
         MultiFormatReader reader;
 
         public PreviewToStringFunction() {
@@ -227,8 +241,6 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
         @NonNull
         @Override
         public Result<String> apply(@NonNull PreviewData input) {
-            Log.e(TAG,"previewToStringFunction.apply is in thread: "+Thread.currentThread().getName());
-
             byte[] data = input.data;
             int height = input.resolution.y;
             int width = input.resolution.x;

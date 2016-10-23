@@ -34,7 +34,7 @@ public class AgeraCamera implements ICamera {
     }
 
     public static AgeraCamera getInstance(Context context) {
-        if(ageraCamera == null){
+        if (ageraCamera == null) {
             ageraCamera = new AgeraCamera(context);
         }
 
@@ -48,10 +48,10 @@ public class AgeraCamera implements ICamera {
 
     @Override
     public void openCamera(SurfaceHolder holder) throws IOException {
-        if(camera == null){
+        if (camera == null) {
             camera = Camera.open();
 
-            if(camera == null){
+            if (camera == null) {
                 throw new IOException();
             }
 
@@ -69,7 +69,7 @@ public class AgeraCamera implements ICamera {
     }
 
     @Override
-    public void closeCamera(){
+    public void closeCamera() {
         if (camera != null) {
             camera.stopPreview();
             camera.release();
@@ -79,10 +79,10 @@ public class AgeraCamera implements ICamera {
 
     @Override
     public void setPreviewCallback(Camera.PreviewCallback callback) {
-        if(callback instanceof AgeraPreviewCallback){
+        if (callback instanceof AgeraPreviewCallback) {
             mPreviewCallback = (AgeraPreviewCallback) callback;
 
-            if(camera != null){
+            if (camera != null) {
                 camera.setPreviewCallback(callback);
             }
         }
@@ -90,7 +90,7 @@ public class AgeraCamera implements ICamera {
 
     @Override
     public void startPreview() {
-        if(camera != null && !isPreviewing){
+        if (camera != null && !isPreviewing) {
             isPreviewing = true;
 
             if (mPreviewCallback != null) {
@@ -115,7 +115,7 @@ public class AgeraCamera implements ICamera {
 
     @Override
     public void requestPreview(OnNewpreview newpreview) {
-        if(camera != null && isPreviewing){
+        if (camera != null && isPreviewing) {
             mPreviewCallback.setOnNewpreview(newpreview);
             camera.setPreviewCallback(mPreviewCallback);
         }
@@ -134,7 +134,7 @@ public class AgeraCamera implements ICamera {
             autofocusHandler = new AutofocusHandler();
         }
 
-        if(camera != null && isPreviewing){
+        if (camera != null && isPreviewing) {
             autoFocusCallback.setHandler(autofocusHandler);
             camera.autoFocus(autoFocusCallback);
         }
