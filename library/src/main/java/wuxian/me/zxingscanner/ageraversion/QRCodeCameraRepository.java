@@ -42,8 +42,6 @@ import wuxian.me.zxingscanner.share.PlanarYUVLuminanceSource;
 import wuxian.me.zxingscanner.share.DecodeFormatManager;
 import wuxian.me.zxingscanner.share.view.ViewfinderResultPointCallback;
 
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
-
 /**
  * Created by wuxian on 20/10/2016.
  * 循环@previewRepository
@@ -56,11 +54,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
  * 流程池每一个线程是由 camera的previewcallback发起的。
  * <p>
  *
- * Fixme: This version has some memory issure.
- *
  * Todo: add ScanView
- *
- * Todo:最终还是选择了google demo的单线程版本
  */
 
 public class QRCodeCameraRepository extends BaseObservable implements Supplier<String>, Updatable, OnNewpreview {
@@ -74,7 +68,8 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     private boolean hasSurface = false;
     private boolean activated = false;
 
-    private List<Repository> mPreviewRepos = new ArrayList<>();
+    private Repository repository = null;
+
     private SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
@@ -148,59 +143,42 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
 
     private Executor executor;
     private Executor getDefaultExecutor(){
-
         if(executor == null){
             executor = Executors.newFixedThreadPool(1);
         }
         return executor;
     }
 
+    /**
+     * called by @AgeraPreviewCallback
+     * @param data
+     */
     @Override
     public void onNewPreview(PreviewData data) {
-        Repository<Result<String>> repository = Repositories.repositoryWithInitialValue(getInitialResultValue())
-                .observe()
-                .onUpdatesPerLoop()
-                .goTo(getDefaultExecutor())
-                .getFrom(new SimpleSuplier(data))
-                .thenTransform(new PreviewToStringFunction())
-                .compile();
-        repository.addUpdatable(this);
+        if(repository == null){
+            repository = Repositories.repositoryWithInitialValue(getInitialResultValue())
+                    .observe()
+                    .onUpdatesPerLoop()
+                    .goTo(getDefaultExecutor())
+                    .getFrom(new SimpleSuplier(data))
+                    .thenTransform(new PreviewToStringFunction())
+                    .compile();
+        }
 
-        mPreviewRepos.add(repository);
+        repository.addUpdatable(this);
     }
 
-    /**
-     * "one" of these previewRepo has returned qrcode string
-     *
-     * FixMe: can't remove updatable??
-     *
-     * FixMe: out of memory,create too much thread. --> newPreview comes too fast,decode needs a lot of memory
-     *
-     * 原先的CameraManager的做法是前一张preview解析出来后"才"通知进行下一张preview的采集与解析
-     * --> 这样的话mPreviewRepo其实只需要一个了
-     * --> 而且这样的话可以重构成为一条repostory 没必要存在两个repository了 通过function来变幻即可
-     *
-     * if there is a better solution???
-     *
-     */
     @Override
     public synchronized void update() {
         Log.e(TAG,"in repository.update");
 
-        for (Repository rep : mPreviewRepos) {
-            if (rep.get() == Result.<String>absent()) {
-                continue;
-            }
-            if (rep.get() == Result.failure()) {
-                continue;
-            }
-
-            qrcode = (String) (((Result) rep.get()).get());
+        if(repository.get() == Result.failure()){
+            camera.requestPreview(this);
+        } else {
+            qrcode = (String) (((Result) repository.get()).get());
 
             cleanUp();
             dispatchUpdate();
-
-            break;
         }
     }
 
@@ -211,17 +189,10 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
      * 3 stop autofocus
      */
     private void cleanUp() {
-        for (Repository rep : mPreviewRepos) {
-            try {
-                rep.removeUpdatable(this);
-            } catch (IllegalStateException e) {
-                continue;
-            }
-        }
-        mPreviewRepos.clear();
-
         if (camera != null) {
             camera.stopPreview();  //Fixme: 调用stopPreview时会surfaceview会静止 但正确的行为应该是继续显示图片
+
+            repository.removeUpdatable(this);
         }
     }
 

@@ -34,7 +34,7 @@ public class AgeraPreviewCallback implements Camera.PreviewCallback {
             }
             Point point = manager.getCameraResolution();
             onNewpreview.onNewPreview(new PreviewData(point, data));
-            //onNewpreview = null; //防止发送preview太过频繁 --> fixme???
+            onNewpreview = null; //防止发送preview太过频繁
         }
     }
 
