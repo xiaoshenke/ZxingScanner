@@ -1,11 +1,7 @@
 package wuxian.me.zxingscanner.ageraversion;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -18,16 +14,8 @@ import com.google.android.agera.Repository;
 import com.google.android.agera.Result;
 import com.google.android.agera.Supplier;
 import com.google.android.agera.Updatable;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.ReaderException;
-import com.google.zxing.common.HybridBinarizer;
 
 import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Vector;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -36,10 +24,6 @@ import wuxian.me.zxingscanner.ageraversion.camera.AgeraPreviewCallback;
 import wuxian.me.zxingscanner.ageraversion.camera.ICamera;
 import wuxian.me.zxingscanner.ageraversion.camera.OnNewpreview;
 import wuxian.me.zxingscanner.ageraversion.camera.PreviewData;
-import wuxian.me.zxingscanner.share.CameraConfigurationManager;
-import wuxian.me.zxingscanner.share.PlanarYUVLuminanceSource;
-import wuxian.me.zxingscanner.share.DecodeFormatManager;
-import wuxian.me.zxingscanner.share.view.ViewfinderResultPointCallback;
 
 /**
  * Created by wuxian on 20/10/2016.
@@ -227,150 +211,17 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     }
 
     private class PreviewToStringFunction implements Function<PreviewData, Result<String>> {
-        MultiFormatReader reader;
-
-        public PreviewToStringFunction() {
-            init();
-        }
-
-        private void init() {
-            reader = new MultiFormatReader();
-            reader.setHints(getDefaultHints());
-        }
-
         @NonNull
         @Override
         public Result<String> apply(@NonNull PreviewData input) {
-            byte[] data = input.data;
-            int height = input.resolution.y;
-            int width = input.resolution.x;
 
-            byte[] rotatedData = new byte[data.length];
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++)
-                    rotatedData[x * height + height - y - 1] = data[x + y * width];
-            }
-            int tmp = width; // Here we are swapping, that's the difference to #11
-            width = height;
-            height = tmp;
-            data = rotatedData;
-
-            com.google.zxing.Result rawResult = null;
-            PlanarYUVLuminanceSource source = getSourceFromPreviewData(new PreviewData(new Point(width, height), data));
-
-            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
             try {
-                rawResult = reader.decodeWithState(bitmap);
-            } catch (ReaderException re) {
+                String code = DecodeManager.getQrcodeFromPreviewData(context, input);
+                return Result.success(code);
+
+            } catch (DecodeException e) {
                 return Result.failure();
-            } finally {
-                reader.reset();
             }
-
-            if (rawResult != null) {
-                final String code = rawResult.getText().trim();
-
-                if (!TextUtils.isEmpty(code)) {
-                    return Result.success(code);
-                }
-            }
-
-            return Result.failure();
-        }
-
-        private Rect getFramingRect() {
-            CameraConfigurationManager configManager = AgeraCamera.getInstance(context).getConfigManager();
-            if (configManager == null) {
-                return null;
-            }
-
-            Point screenResolution = configManager.getScreenResolution();
-            Rect framingRect;
-            int width = screenResolution.x;
-            int height = screenResolution.y;
-
-            int leftOffset = (screenResolution.x - width) / 2;
-            int topOffset = (screenResolution.y - height) / 3;
-            framingRect = new Rect(leftOffset, topOffset, leftOffset + width,
-                    topOffset + height);
-            return framingRect;
-        }
-
-        private Rect getFramingRectInPreview() {
-            Rect frameRect = getFramingRect();
-            if (frameRect == null) {
-                return null;
-            }
-
-            CameraConfigurationManager configManager = AgeraCamera.getInstance(context).getConfigManager();
-
-            Rect rect = new Rect(frameRect);
-            Point cameraResolution = configManager.getCameraResolution();
-            Point screenResolution = configManager.getScreenResolution();
-            rect.left = rect.left * cameraResolution.y / screenResolution.x;
-            rect.right = rect.right * cameraResolution.y / screenResolution.x;
-            rect.top = rect.top * cameraResolution.x / screenResolution.y;
-            rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;
-
-            return rect;
-        }
-
-        private PlanarYUVLuminanceSource getSourceFromPreviewData(PreviewData previewData) {
-            CameraConfigurationManager configManager = AgeraCamera.getInstance(context).getConfigManager();
-            if (configManager == null) {
-                return null;
-            }
-
-            byte[] data = previewData.data;
-            int width = previewData.resolution.x;
-            int height = previewData.resolution.y;
-
-            Rect rect = getFramingRectInPreview();
-            int previewFormat = configManager.getPreviewFormat();
-            String previewFormatString = configManager.getPreviewFormatString();
-            switch (previewFormat) {
-                // This is the standard Android format which all devices are REQUIRED to
-                // support.
-                // In theory, it's the only one we should ever care about.
-                case PixelFormat.YCbCr_420_SP:
-                    // This format has never been seen in the wild, but is compatible as
-                    // we only care
-                    // about the Y channel, so allow it.
-                case PixelFormat.YCbCr_422_SP:
-                    return new PlanarYUVLuminanceSource(data, width, height, rect.left,
-                            rect.top, rect.width(), rect.height());
-                default:
-                    // The Samsung Moment incorrectly uses this variant instead of the
-                    // 'sp' version.
-                    // Fortunately, it too has all the Y data up front, so we can read
-                    // it.
-                    if ("yuv420p".equals(previewFormatString)) {
-                        return new PlanarYUVLuminanceSource(data, width, height,
-                                rect.left, rect.top, rect.width(), rect.height());
-                    }
-            }
-            throw new IllegalArgumentException("Unsupported picture format: "
-                    + previewFormat + '/' + previewFormatString);
-
-        }
-
-        Hashtable<DecodeHintType, Object> getDefaultHints() {
-            Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>();
-            Vector<BarcodeFormat> decodeFormats = new Vector<BarcodeFormat>();
-            decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
-            decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
-            decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
-            hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
-
-            String characterSet = null;
-            if (characterSet != null) {
-                hints.put(DecodeHintType.CHARACTER_SET, characterSet);
-            }
-
-            hints.put(DecodeHintType.NEED_RESULT_POINT_CALLBACK,
-                    new ViewfinderResultPointCallback(null));  //Todo: replace last parameter
-
-            return hints;
         }
     }
 }
