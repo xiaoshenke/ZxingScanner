@@ -27,4 +27,6 @@ public interface ICamera {
     void closeCamera();
 
     CameraConfigurationManager getConfigManager();
+
+    boolean isInpreview();
 }

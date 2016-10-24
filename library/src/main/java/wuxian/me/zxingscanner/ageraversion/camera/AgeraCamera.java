@@ -47,6 +47,11 @@ public class AgeraCamera implements ICamera {
     }
 
     @Override
+    public boolean isInpreview() {
+        return isPreviewing;
+    }
+
+    @Override
     public void openCamera(SurfaceHolder holder) throws IOException {
         if (camera == null) {
             camera = Camera.open();
