@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.rxversion;
+package wuxian.me.zxingscanner.rxversion.version1;
 
 import android.view.SurfaceView;
 
@@ -6,12 +6,16 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import wuxian.me.zxingscanner.rxversion.NewpreviewFunction;
+import wuxian.me.zxingscanner.rxversion.OnSubscribeFromCamera;
 import wuxian.me.zxingscanner.share.camera.RxCamera;
 
 /**
  * Created by wuxian on 23/10/2016.
  *
  * Todo add ScanView
+ *
+ * Todo refactor: according to @rxBroadcastReceiver
  */
 
 public class QRCodeObservable {

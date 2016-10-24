@@ -11,7 +11,7 @@ import wuxian.me.zxingscanner.share.preview.PreviewData;
 /**
  * Created by wuxian on 23/10/2016.
  *
- * Todo: Rxjava error handling?
+ * Todo: Rxjava error handling? --> RxJava doesn't have inner-builded error type??
  */
 
 public class NewpreviewFunction implements Func1<PreviewData, String> {

@@ -73,14 +73,12 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData
         }
     }
 
-    /**
-     * true origin data,call setProducer
-     *
-     * @param data
-     */
     @Override
     public void onNewPreview(PreviewData data) {
         subscriber.setProducer(new NewPreviewProducer(subscriber, data));
+        //or just
+        // subscribe.call(data);
+        // subscribe.onComplete();
     }
 
     @Override

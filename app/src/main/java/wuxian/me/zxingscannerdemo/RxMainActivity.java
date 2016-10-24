@@ -8,7 +8,7 @@ import android.widget.Toast;
 import rx.Subscriber;
 import wuxian.me.zxingscanner.share.camera.RxCamera;
 import wuxian.me.zxingscanner.demo.R;
-import wuxian.me.zxingscanner.rxversion.QRCodeObservable;
+import wuxian.me.zxingscanner.rxversion.version1.QRCodeObservable;
 import wuxian.me.zxingscanner.share.view.ScanView;
 
 
