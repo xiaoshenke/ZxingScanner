@@ -1,11 +1,11 @@
-package wuxian.me.zxingscanner.ageraversion.camera;
+package wuxian.me.zxingscanner.share.camera;
 
 import android.hardware.Camera;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
 
-import wuxian.me.zxingscanner.share.CameraConfigurationManager;
+import wuxian.me.zxingscanner.share.preview.OnNewpreview;
 
 /**
  * Created by wuxian on 20/10/2016.

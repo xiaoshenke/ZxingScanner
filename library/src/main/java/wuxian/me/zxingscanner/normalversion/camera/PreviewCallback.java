@@ -22,7 +22,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import wuxian.me.zxingscanner.share.CameraConfigurationManager;
+import wuxian.me.zxingscanner.share.camera.CameraConfigurationManager;
 
 public final class PreviewCallback implements Camera.PreviewCallback {
 

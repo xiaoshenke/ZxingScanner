@@ -4,9 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import rx.functions.Func1;
-import wuxian.me.zxingscanner.ageraversion.DecodeException;
-import wuxian.me.zxingscanner.ageraversion.DecodeManager;
-import wuxian.me.zxingscanner.ageraversion.camera.PreviewData;
+import wuxian.me.zxingscanner.share.decode.DecodeException;
+import wuxian.me.zxingscanner.share.decode.DecodeManager;
+import wuxian.me.zxingscanner.share.preview.PreviewData;
 
 /**
  * Created by wuxian on 23/10/2016.

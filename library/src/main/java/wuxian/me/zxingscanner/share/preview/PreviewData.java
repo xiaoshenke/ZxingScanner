@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.ageraversion.camera;
+package wuxian.me.zxingscanner.share.preview;
 
 import android.graphics.Point;
 

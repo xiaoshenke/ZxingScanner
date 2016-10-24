@@ -9,11 +9,11 @@ import java.io.IOException;
 import rx.Observable;
 import rx.Producer;
 import rx.Subscriber;
-import wuxian.me.zxingscanner.ageraversion.camera.AgeraCamera;
-import wuxian.me.zxingscanner.ageraversion.camera.AgeraPreviewCallback;
-import wuxian.me.zxingscanner.ageraversion.camera.ICamera;
-import wuxian.me.zxingscanner.ageraversion.camera.OnNewpreview;
-import wuxian.me.zxingscanner.ageraversion.camera.PreviewData;
+import wuxian.me.zxingscanner.share.camera.RxCamera;
+import wuxian.me.zxingscanner.share.preview.RXPreviewCallback;
+import wuxian.me.zxingscanner.share.camera.ICamera;
+import wuxian.me.zxingscanner.share.preview.OnNewpreview;
+import wuxian.me.zxingscanner.share.preview.PreviewData;
 
 /**
  * Created by wuxian on 23/10/2016.
@@ -60,7 +60,7 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData
     }
 
     private void runCameraLoop() {
-        camera = AgeraCamera.getInstance(surfaceView.getContext());
+        camera = RxCamera.getInstance(surfaceView.getContext());
 
         if (!camera.isInpreview()) {
             try {
@@ -68,7 +68,7 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData
             } catch (IOException e) {
                 return;
             }
-            camera.setPreviewCallback(new AgeraPreviewCallback(camera.getConfigManager(), this));
+            camera.setPreviewCallback(new RXPreviewCallback(camera.getConfigManager(), this));
             camera.startPreview();
         }
     }

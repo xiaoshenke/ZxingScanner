@@ -28,8 +28,8 @@ import android.view.SurfaceHolder;
 
 import java.io.IOException;
 
-import wuxian.me.zxingscanner.share.CameraConfigurationManager;
-import wuxian.me.zxingscanner.share.PlanarYUVLuminanceSource;
+import wuxian.me.zxingscanner.share.camera.CameraConfigurationManager;
+import wuxian.me.zxingscanner.share.decode.PlanarYUVLuminanceSource;
 
 /**
  * @author dswitkin@google.com (Daniel Switkin)

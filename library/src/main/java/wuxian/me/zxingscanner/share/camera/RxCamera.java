@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.ageraversion.camera;
+package wuxian.me.zxingscanner.share.camera;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -8,38 +8,39 @@ import android.view.SurfaceHolder;
 import java.io.IOException;
 
 import wuxian.me.zxingscanner.R;
-import wuxian.me.zxingscanner.share.CameraConfigurationManager;
+import wuxian.me.zxingscanner.share.preview.RXPreviewCallback;
+import wuxian.me.zxingscanner.share.preview.OnNewpreview;
 
 /**
  * Created by wuxian on 20/10/2016.
  */
 
-public class AgeraCamera implements ICamera {
+public class RxCamera implements ICamera {
 
     private OnNewpreview newpreview;
-    private AgeraAutoFocusCallback autoFocusCallback;
+    private RxAutoFocusCallback autoFocusCallback;
     private AutofocusHandler autofocusHandler;
 
-    private static AgeraCamera ageraCamera;
+    private static RxCamera rxCamera;
     private Camera camera;
 
     private boolean isPreviewing = false;
-    private AgeraPreviewCallback mPreviewCallback;
+    private RXPreviewCallback mPreviewCallback;
 
     private CameraConfigurationManager configManager;
     private Context context;
     private boolean initialized = false;
 
-    private AgeraCamera(Context context) {
+    private RxCamera(Context context) {
         this.context = context;
     }
 
-    public static AgeraCamera getInstance(Context context) {
-        if (ageraCamera == null) {
-            ageraCamera = new AgeraCamera(context);
+    public static RxCamera getInstance(Context context) {
+        if (rxCamera == null) {
+            rxCamera = new RxCamera(context);
         }
 
-        return ageraCamera;
+        return rxCamera;
     }
 
     @Override
@@ -85,8 +86,8 @@ public class AgeraCamera implements ICamera {
 
     @Override
     public void setPreviewCallback(Camera.PreviewCallback callback) {
-        if (callback instanceof AgeraPreviewCallback) {
-            mPreviewCallback = (AgeraPreviewCallback) callback;
+        if (callback instanceof RXPreviewCallback) {
+            mPreviewCallback = (RXPreviewCallback) callback;
 
             if (camera != null) {
                 camera.setPreviewCallback(callback);
@@ -146,7 +147,7 @@ public class AgeraCamera implements ICamera {
     @Override
     public void requestAutoFocus() {
         if (autoFocusCallback == null) {
-            autoFocusCallback = new AgeraAutoFocusCallback();
+            autoFocusCallback = new RxAutoFocusCallback();
         }
 
         if (autofocusHandler == null) {

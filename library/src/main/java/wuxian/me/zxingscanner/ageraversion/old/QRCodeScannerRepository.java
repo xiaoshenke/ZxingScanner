@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.ageraversion;
+package wuxian.me.zxingscanner.ageraversion.old;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;

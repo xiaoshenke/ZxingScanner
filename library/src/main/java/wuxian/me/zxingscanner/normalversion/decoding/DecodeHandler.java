@@ -33,7 +33,7 @@ import java.util.Hashtable;
 
 import wuxian.me.zxingscanner.R;
 import wuxian.me.zxingscanner.normalversion.camera.CameraManager;
-import wuxian.me.zxingscanner.share.PlanarYUVLuminanceSource;
+import wuxian.me.zxingscanner.share.decode.PlanarYUVLuminanceSource;
 
 final class DecodeHandler extends Handler {
 

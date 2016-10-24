@@ -7,7 +7,6 @@ import android.widget.Toast;
 import com.google.android.agera.Updatable;
 
 import wuxian.me.zxingscanner.ageraversion.QRCodeCameraRepository;
-import wuxian.me.zxingscanner.ageraversion.QRCodeScannerRepository;
 import wuxian.me.zxingscanner.demo.R;
 import wuxian.me.zxingscanner.share.view.ScanView;
 

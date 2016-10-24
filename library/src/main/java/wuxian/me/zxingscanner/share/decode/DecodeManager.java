@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.ageraversion;
+package wuxian.me.zxingscanner.share.decode;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -6,7 +6,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.text.TextUtils;
 
-import com.google.android.agera.Result;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -17,11 +16,9 @@ import com.google.zxing.common.HybridBinarizer;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import wuxian.me.zxingscanner.ageraversion.camera.AgeraCamera;
-import wuxian.me.zxingscanner.ageraversion.camera.PreviewData;
-import wuxian.me.zxingscanner.share.CameraConfigurationManager;
-import wuxian.me.zxingscanner.share.DecodeFormatManager;
-import wuxian.me.zxingscanner.share.PlanarYUVLuminanceSource;
+import wuxian.me.zxingscanner.share.camera.CameraConfigurationManager;
+import wuxian.me.zxingscanner.share.camera.RxCamera;
+import wuxian.me.zxingscanner.share.preview.PreviewData;
 import wuxian.me.zxingscanner.share.view.ViewfinderResultPointCallback;
 
 /**
@@ -79,7 +76,7 @@ public final class DecodeManager {
     }
 
     private static Rect getFramingRect(Context context) {
-        CameraConfigurationManager configManager = AgeraCamera.getInstance(context).getConfigManager();
+        CameraConfigurationManager configManager = RxCamera.getInstance(context).getConfigManager();
         if (configManager == null) {
             return null;
         }
@@ -102,7 +99,7 @@ public final class DecodeManager {
             return null;
         }
 
-        CameraConfigurationManager configManager = AgeraCamera.getInstance(context).getConfigManager();
+        CameraConfigurationManager configManager = RxCamera.getInstance(context).getConfigManager();
 
         Rect rect = new Rect(frameRect);
         Point cameraResolution = configManager.getCameraResolution();
@@ -116,7 +113,7 @@ public final class DecodeManager {
     }
 
     private static PlanarYUVLuminanceSource getSourceFromPreviewData(Context context, PreviewData previewData) {
-        CameraConfigurationManager configManager = AgeraCamera.getInstance(context).getConfigManager();
+        CameraConfigurationManager configManager = RxCamera.getInstance(context).getConfigManager();
         if (configManager == null) {
             return null;
         }

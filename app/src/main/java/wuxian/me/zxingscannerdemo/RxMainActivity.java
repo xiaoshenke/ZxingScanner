@@ -6,10 +6,9 @@ import android.view.SurfaceView;
 import android.widget.Toast;
 
 import rx.Subscriber;
-import wuxian.me.zxingscanner.ageraversion.camera.AgeraCamera;
+import wuxian.me.zxingscanner.share.camera.RxCamera;
 import wuxian.me.zxingscanner.demo.R;
 import wuxian.me.zxingscanner.rxversion.QRCodeObservable;
-import wuxian.me.zxingscanner.rxversion.old.RxQRCodeScanner;
 import wuxian.me.zxingscanner.share.view.ScanView;
 
 
@@ -62,7 +61,7 @@ public class RxMainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        AgeraCamera.getInstance(this).closeCamera();
+        RxCamera.getInstance(this).closeCamera();
 
         //RxQRCodeScanner.getInstance().stop();
     }

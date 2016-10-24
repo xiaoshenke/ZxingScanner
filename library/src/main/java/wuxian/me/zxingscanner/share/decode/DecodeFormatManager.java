@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner.share;
+package wuxian.me.zxingscanner.share.decode;
 
 import android.content.Intent;
 import android.net.Uri;

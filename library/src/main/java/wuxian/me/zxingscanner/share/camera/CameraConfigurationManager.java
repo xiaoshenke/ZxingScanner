@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner.share;
+package wuxian.me.zxingscanner.share.camera;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

@@ -27,7 +27,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
-import wuxian.me.zxingscanner.share.DecodeFormatManager;
+import wuxian.me.zxingscanner.share.decode.DecodeFormatManager;
 
 /**
  * @author dswitkin@google.com (Daniel Switkin)

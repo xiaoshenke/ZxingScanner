@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.ageraversion.camera;
+package wuxian.me.zxingscanner.share.camera;
 
 import android.hardware.Camera;
 import android.os.Handler;
@@ -11,11 +11,11 @@ import wuxian.me.zxingscanner.R;
  */
 
 
-public class AgeraAutoFocusCallback implements Camera.AutoFocusCallback {
+public class RxAutoFocusCallback implements Camera.AutoFocusCallback {
     private static final long AUTOFOCUS_INTERVAL_MS = 1500L;
     Handler handler;
 
-    public AgeraAutoFocusCallback() {
+    public RxAutoFocusCallback() {
     }
 
     public void setHandler(Handler handler) {

@@ -5,7 +5,7 @@ import android.view.SurfaceView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
-import wuxian.me.zxingscanner.ageraversion.camera.AgeraCamera;
+import wuxian.me.zxingscanner.share.camera.RxCamera;
 
 /**
  * Created by wuxian on 23/10/2016.
@@ -40,11 +40,11 @@ public class QRCodeObservable {
                 @Override
                 public void onNext(String s) {
                     if (s == null) {
-                        AgeraCamera.getInstance(surfaceView.getContext()).requestPreview();
+                        RxCamera.getInstance(surfaceView.getContext()).requestPreview();
                         observable.subscribe(QRCodeObservable.this.qrSubscriber);
                     } else {
                         subscriber.onNext(s);
-                        AgeraCamera.getInstance(surfaceView.getContext()).stopPreview();
+                        RxCamera.getInstance(surfaceView.getContext()).stopPreview();
 
 
                     }

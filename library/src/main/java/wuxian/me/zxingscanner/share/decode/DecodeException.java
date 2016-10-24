@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.ageraversion;
+package wuxian.me.zxingscanner.share.decode;
 
 /**
  * Created by wuxian on 24/10/2016.

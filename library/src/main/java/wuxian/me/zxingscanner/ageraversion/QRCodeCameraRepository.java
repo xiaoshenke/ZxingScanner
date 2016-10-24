@@ -19,11 +19,13 @@ import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import wuxian.me.zxingscanner.ageraversion.camera.AgeraCamera;
-import wuxian.me.zxingscanner.ageraversion.camera.AgeraPreviewCallback;
-import wuxian.me.zxingscanner.ageraversion.camera.ICamera;
-import wuxian.me.zxingscanner.ageraversion.camera.OnNewpreview;
-import wuxian.me.zxingscanner.ageraversion.camera.PreviewData;
+import wuxian.me.zxingscanner.share.decode.DecodeException;
+import wuxian.me.zxingscanner.share.decode.DecodeManager;
+import wuxian.me.zxingscanner.share.camera.RxCamera;
+import wuxian.me.zxingscanner.share.preview.RXPreviewCallback;
+import wuxian.me.zxingscanner.share.camera.ICamera;
+import wuxian.me.zxingscanner.share.preview.OnNewpreview;
+import wuxian.me.zxingscanner.share.preview.PreviewData;
 
 /**
  * Created by wuxian on 20/10/2016.
@@ -103,13 +105,13 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
      * 打开摄像头 此时android内置的camera会定时发送"照片截图"
      */
     private void runCameraLoop() {
-        camera = AgeraCamera.getInstance(context);
+        camera = RxCamera.getInstance(context);
         try {
             camera.openCamera(surfaceHolder);
         } catch (IOException e) {
             return;
         }
-        camera.setPreviewCallback(new AgeraPreviewCallback(camera.getConfigManager(), this));
+        camera.setPreviewCallback(new RXPreviewCallback(camera.getConfigManager(), this));
         camera.startPreview();
     }
 
@@ -133,7 +135,7 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     }
 
     /**
-     * called by @AgeraPreviewCallback
+     * called by @RXPreviewCallback
      *
      * @param data
      */
@@ -144,8 +146,8 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
                     .observe()
                     .onUpdatesPerLoop()
                     .goTo(getDefaultExecutor())
-                    .getFrom(new SimpleSuplier(data))
-                    .thenTransform(new PreviewToStringFunction())
+                    .getFrom(new PreviewSupplier(data))
+                    .thenTransform(new PreviewToStringFunction(context))
                     .compile();
         }
 
@@ -196,32 +198,4 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
         }
     }
 
-    private class SimpleSuplier implements Supplier<PreviewData> {
-        private PreviewData data;
-
-        public SimpleSuplier(PreviewData data) {
-            this.data = data;
-        }
-
-        @NonNull
-        @Override
-        public PreviewData get() {
-            return data;
-        }
-    }
-
-    private class PreviewToStringFunction implements Function<PreviewData, Result<String>> {
-        @NonNull
-        @Override
-        public Result<String> apply(@NonNull PreviewData input) {
-
-            try {
-                String code = DecodeManager.getQrcodeFromPreviewData(context, input);
-                return Result.success(code);
-
-            } catch (DecodeException e) {
-                return Result.failure();
-            }
-        }
-    }
 }

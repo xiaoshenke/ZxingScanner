@@ -1,21 +1,21 @@
-package wuxian.me.zxingscanner.ageraversion.camera;
+package wuxian.me.zxingscanner.share.preview;
 
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.util.Log;
 
-import wuxian.me.zxingscanner.share.CameraConfigurationManager;
+import wuxian.me.zxingscanner.share.camera.CameraConfigurationManager;
 
 /**
  * Created by wuxian on 20/10/2016.
  */
 
-public class AgeraPreviewCallback implements Camera.PreviewCallback {
+public class RXPreviewCallback implements Camera.PreviewCallback {
     private OnNewpreview onNewpreview;
     private CameraConfigurationManager manager;
     private boolean once = false;  //for test
 
-    public AgeraPreviewCallback(CameraConfigurationManager manager, OnNewpreview onNewpreview) {
+    public RXPreviewCallback(CameraConfigurationManager manager, OnNewpreview onNewpreview) {
         this.onNewpreview = onNewpreview;
         this.manager = manager;
     }
