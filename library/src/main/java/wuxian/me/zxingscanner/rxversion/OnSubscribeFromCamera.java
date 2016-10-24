@@ -1,5 +1,6 @@
 package wuxian.me.zxingscanner.rxversion;
 
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -19,7 +20,7 @@ import wuxian.me.zxingscanner.ageraversion.camera.PreviewData;
  * Origin data from camera' preview callback
  */
 
-public class OnSubscribeFromCamera implements Observable.OnSubscribe<SurfaceView>, OnNewpreview {
+public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData>, OnNewpreview {
     private SurfaceHolder surfaceHolder;
     private SurfaceView surfaceView;
     private Subscriber subscriber;
@@ -72,16 +73,6 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<SurfaceView
         }
     }
 
-    @Override
-    public void call(Subscriber<? super SurfaceView> subscriber) {
-        activated = true;
-        this.subscriber = subscriber;
-
-        if (activated && hasSurface) {
-            runCameraLoop();
-        }
-    }
-
     /**
      * true origin data,call setProducer
      *
@@ -92,7 +83,18 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<SurfaceView
         subscriber.setProducer(new NewPreviewProducer(subscriber, data));
     }
 
+    @Override
+    public void call(Subscriber<? super PreviewData> subscriber) {
+        activated = true;
+        this.subscriber = subscriber;
+
+        if (activated && hasSurface) {
+            runCameraLoop();
+        }
+    }
+
     private class NewPreviewProducer implements Producer {
+        private static final String TAG = "Producer";
         private Subscriber child;
         private PreviewData data;
 
@@ -106,6 +108,8 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<SurfaceView
          */
         @Override
         public void request(long n) {
+
+            Log.e(TAG, "request");
             if (child.isUnsubscribed()) {
                 return;
             }
