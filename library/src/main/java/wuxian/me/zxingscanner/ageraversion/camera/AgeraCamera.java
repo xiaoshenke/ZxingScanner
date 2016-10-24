@@ -6,18 +6,19 @@ import android.os.Message;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 import wuxian.me.zxingscanner.R;
 import wuxian.me.zxingscanner.share.CameraConfigurationManager;
-import wuxian.me.zxingscanner.share.PlanarYUVLuminanceSource;
 
 /**
  * Created by wuxian on 20/10/2016.
  */
 
 public class AgeraCamera implements ICamera {
+
+    private OnNewpreview newpreview;
+    private AgeraAutoFocusCallback autoFocusCallback;
+    private AutofocusHandler autofocusHandler;
 
     private static AgeraCamera ageraCamera;
     private Camera camera;
@@ -119,15 +120,28 @@ public class AgeraCamera implements ICamera {
     }
 
     @Override
+    public void requestPreview() {
+        if(newpreview == null){
+            throw new IllegalStateException("you havn't init preview callback yet! can't call this function");
+        }
+
+        requestPreview(newpreview);
+    }
+
+    @Override
     public void requestPreview(OnNewpreview newpreview) {
+
+        if(newpreview == null){
+            throw new IllegalArgumentException("newPreview is null");
+        }
+
+        this.newpreview = newpreview;
+
         if (camera != null && isPreviewing) {
             mPreviewCallback.setOnNewpreview(newpreview);
             camera.setPreviewCallback(mPreviewCallback);
         }
     }
-
-    private AgeraAutoFocusCallback autoFocusCallback;
-    private AutofocusHandler autofocusHandler;
 
     @Override
     public void requestAutoFocus() {

@@ -18,6 +18,8 @@ public interface ICamera {
 
     void stopPreview();
 
+    void requestPreview();
+
     void requestPreview(OnNewpreview onNewpreview);
 
     void requestAutoFocus();

@@ -11,11 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="531b2262-d38e-4637-8c5a-513672b282ea" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/NewpreviewTransformer.java" afterPath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/NewpreviewFunction.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/wuxian/me/zxingscannerdemo/RxMainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/wuxian/me/zxingscannerdemo/RxMainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/OnSubscribeFromCamera.java" afterPath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/OnSubscribeFromCamera.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraCamera.java" afterPath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraCamera.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/ICamera.java" afterPath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/ICamera.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/QRCodeObservable.java" afterPath="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/QRCodeObservable.java" />
     </list>
     <ignored path="ZxingScanner.iws" />
@@ -51,84 +50,49 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="OnSubscribeFromCamera.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/OnSubscribeFromCamera.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="111" column="34" selection-start-line="111" selection-start-column="34" selection-end-line="111" selection-end-column="34" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Subscriber.java" pinned="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.1.9/797f3231f8d6795514ca75fa0e798e052e91e2d2/rxjava-1.1.9-sources.jar!/rx/Subscriber.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="188" column="16" selection-start-line="188" selection-start-column="16" selection-end-line="188" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AgeraPreviewCallback.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraPreviewCallback.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="377">
-              <caret line="36" column="12" selection-start-line="36" selection-start-column="12" selection-end-line="36" selection-end-column="12" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="QRCodeObservable.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/QRCodeObservable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="37" column="13" selection-start-line="37" selection-start-column="13" selection-end-line="37" selection-end-column="13" />
+            <state relative-caret-position="345">
+              <caret line="41" column="20" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#467#468#0" expanded="true" />
+                <element signature="e#513#514#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NewpreviewFunction.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/NewpreviewFunction.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="347">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#592#593#0" expanded="true" />
-                <element signature="e#630#631#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RxMainActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="RxMainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/wuxian/me/zxingscannerdemo/RxMainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="40" column="50" selection-start-line="40" selection-start-column="50" selection-end-line="40" selection-end-column="50" />
+            <state relative-caret-position="-568">
+              <caret line="7" column="21" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#2016#2017#0" expanded="true" />
+                <element signature="e#2049#2050#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DecodeManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/DecodeManager.java">
+      <file leaf-file-name="AgeraCamera.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraCamera.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="827">
-              <caret line="67" column="9" selection-start-line="67" selection-start-column="9" selection-end-line="67" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="105">
+              <caret line="7" column="27" selection-start-line="7" selection-start-column="27" selection-end-line="7" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ICamera.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/ICamera.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="20" column="26" selection-start-line="20" selection-start-column="26" selection-end-line="20" selection-end-column="26" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -2777,17 +2741,17 @@
         <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/QRCodeCameraRepository2.java" />
         <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/NewpreviewTransformer.java" />
         <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/old/RxQRCodeScanner.java" />
-        <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/ICamera.java" />
-        <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraCamera.java" />
         <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/DecodeException.java" />
         <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/DecodeManager.java" />
         <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/QRCodeCameraRepository.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/wuxian/me/zxingscannerdemo/RxMainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/QRCodeObservable.java" />
         <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/OnSubscribeFromCamera.java" />
         <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/NewpreviewFunction.java" />
         <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraPreviewCallback.java" />
+        <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/ICamera.java" />
+        <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraCamera.java" />
+        <option value="$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/QRCodeObservable.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/wuxian/me/zxingscannerdemo/RxMainActivity.java" />
       </list>
     </option>
   </component>
@@ -2826,78 +2790,7 @@
       <pane id="AndroidView" />
       <pane id="Scope" />
       <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ZxingScanner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ZxingScanner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ZxingScanner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ZxingScanner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ZxingScanner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ZxingScanner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ZxingScanner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ZxingScanner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ZxingScanner" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
+        <subPane />
       </pane>
       <pane id="Scratches" />
     </panes>
@@ -3387,7 +3280,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2657952" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2657952" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.56491226" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -3434,7 +3327,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/wuxian/me/zxingscannerdemo/RxMainActivity.java</url>
-          <line>40</line>
+          <line>36</line>
           <properties />
           <option name="timeStamp" value="19" />
         </line-breakpoint>
@@ -3684,25 +3577,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/ICamera.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="30" column="26" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraCamera.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="50" column="27" selection-start-line="50" selection-start-column="27" selection-end-line="50" selection-end-column="27" />
-          <folding>
-            <element signature="e#1255#1256#0" expanded="true" />
-            <element signature="e#1290#1291#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.1.9/797f3231f8d6795514ca75fa0e798e052e91e2d2/rxjava-1.1.9-sources.jar!/rx/functions/Action1.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -3772,34 +3646,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/QRCodeObservable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="37" column="13" selection-start-line="37" selection-start-column="13" selection-end-line="37" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/wuxian/me/zxingscannerdemo/RxMainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="40" column="50" selection-start-line="40" selection-start-column="50" selection-end-line="40" selection-end-column="50" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.1.9/797f3231f8d6795514ca75fa0e798e052e91e2d2/rxjava-1.1.9-sources.jar!/rx/Subscriber.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="188" column="16" selection-start-line="188" selection-start-column="16" selection-end-line="188" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/OnSubscribeFromCamera.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="332">
@@ -3812,8 +3658,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/NewpreviewFunction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
-          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+        <state relative-caret-position="377">
+          <caret line="28" column="44" selection-start-line="28" selection-start-column="44" selection-end-line="28" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#592#593#0" expanded="true" />
@@ -3824,9 +3670,56 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraPreviewCallback.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="377">
-          <caret line="36" column="12" selection-start-line="36" selection-start-column="12" selection-end-line="36" selection-end-column="12" />
+        <state relative-caret-position="510">
+          <caret line="40" column="1" selection-start-line="40" selection-start-column="1" selection-end-line="40" selection-end-column="1" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.1.9/797f3231f8d6795514ca75fa0e798e052e91e2d2/rxjava-1.1.9-sources.jar!/rx/Subscriber.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="188" column="16" selection-start-line="188" selection-start-column="16" selection-end-line="188" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/ICamera.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="20" column="26" selection-start-line="20" selection-start-column="26" selection-end-line="20" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/ageraversion/camera/AgeraCamera.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="27" selection-start-line="7" selection-start-column="27" selection-end-line="7" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/library/src/main/java/wuxian/me/zxingscanner/rxversion/QRCodeObservable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="41" column="20" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="20" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#467#468#0" expanded="true" />
+            <element signature="e#513#514#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/wuxian/me/zxingscannerdemo/RxMainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-568">
+          <caret line="7" column="21" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
+          <folding>
+            <element signature="e#2016#2017#0" expanded="true" />
+            <element signature="e#2049#2050#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
