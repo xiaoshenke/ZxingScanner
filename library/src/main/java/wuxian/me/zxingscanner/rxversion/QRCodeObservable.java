@@ -22,8 +22,8 @@ public class QRCodeObservable {
         this.surfaceView = surfaceView;
     }
 
-    private Subscriber<String> getQrSubscriber(){
-        if(subscriber == null){
+    private Subscriber<String> getQrSubscriber() {
+        if (subscriber == null) {
             throw new IllegalStateException("subscriber is null!");
         }
 
@@ -50,6 +50,7 @@ public class QRCodeObservable {
 
         return ret;
     }
+
     public void subscribe(final Subscriber<String> subscriber) {
 
         observable = Observable.create(new OnSubscribeFromCamera(surfaceView))
@@ -60,6 +61,5 @@ public class QRCodeObservable {
         this.subscriber = subscriber;
         observable.subscribe(getQrSubscriber());
     }
-
 
 }

@@ -85,7 +85,7 @@ public class RxCamera implements ICamera {
     }
 
     @Override
-    public void setPreviewCallback(Camera.PreviewCallback callback,OnNewpreview onNewpreview) {
+    public void setPreviewCallback(Camera.PreviewCallback callback, OnNewpreview onNewpreview) {
         if (callback instanceof RXPreviewCallback) {
             mPreviewCallback = (RXPreviewCallback) callback;
 
@@ -125,7 +125,7 @@ public class RxCamera implements ICamera {
 
     @Override
     public void requestPreview() {
-        if(newpreview == null){
+        if (newpreview == null) {
             throw new IllegalStateException("you havn't init preview callback yet! can't call this function");
         }
 
@@ -135,7 +135,7 @@ public class RxCamera implements ICamera {
     @Override
     public void requestPreview(OnNewpreview newpreview) {
 
-        if(newpreview == null){
+        if (newpreview == null) {
             throw new IllegalArgumentException("newPreview is null");
         }
 

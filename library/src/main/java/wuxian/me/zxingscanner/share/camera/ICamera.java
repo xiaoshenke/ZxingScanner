@@ -12,7 +12,8 @@ import wuxian.me.zxingscanner.share.preview.OnNewpreview;
  */
 
 public interface ICamera {
-    void setPreviewCallback(Camera.PreviewCallback callback,OnNewpreview onNewpreview);
+
+    void setPreviewCallback(Camera.PreviewCallback callback, OnNewpreview onNewpreview);
 
     void startPreview();
 

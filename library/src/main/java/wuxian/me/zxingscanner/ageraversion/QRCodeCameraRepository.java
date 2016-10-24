@@ -18,9 +18,6 @@ import com.google.android.agera.Updatable;
 import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import wuxian.me.zxingscanner.share.decode.DecodeException;
-import wuxian.me.zxingscanner.share.decode.DecodeManager;
 import wuxian.me.zxingscanner.share.camera.RxCamera;
 import wuxian.me.zxingscanner.share.preview.RXPreviewCallback;
 import wuxian.me.zxingscanner.share.camera.ICamera;
@@ -141,7 +138,8 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
      */
     @Override
     public void onNewPreview(PreviewData data) {
-        if (repository == null) {
+        Log.e(TAG, "onNewPreview");
+        //if (repository == null) {
             repository = Repositories.repositoryWithInitialValue(getInitialResultValue())
                     .observe()
                     .onUpdatesPerLoop()
@@ -149,7 +147,7 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
                     .getFrom(new PreviewSupplier(data))
                     .thenTransform(new PreviewToStringFunction(context))
                     .compile();
-        }
+        //}
 
         repository.addUpdatable(this);
     }
@@ -158,7 +156,8 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
     public synchronized void update() {
         Log.e(TAG, "in repository.update");
 
-        /*
+        repository.removeUpdatable(QRCodeCameraRepository.this);
+
         if(repository.get() == Result.failure()){
             camera.requestPreview(this);
         } else {
@@ -167,10 +166,9 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
             cleanUp();
             dispatchUpdate();
         }
-        */
 
+        /*
         repository.removeUpdatable(QRCodeCameraRepository.this);
-
         ((Result) (repository.get())).ifFailedSendTo(new Receiver<Throwable>() {
             @Override
             public void accept(@NonNull Throwable value) {
@@ -184,6 +182,7 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
                 dispatchUpdate();
             }
         });
+        */
     }
 
     /**
