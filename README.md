@@ -57,26 +57,36 @@ the third paramer is the qrcode result callback.
 
 wola,now you have successfully integrated QRCode function to your application!  
 
-##  RxJava support
-you still have to do step1 and step2.
-step3, In your onResume method,add these code                   
+##  RxJava Version
+you still have to do step1 and step2.           
+step3, In your onResume method,new a QRCodeObservable,then subscribe your Subscriber.                  
+                  
 
 ````
-RxQRCodeScanner.getInstance().surfaceView(mSurfaceView).scanView(mScanView).scan().subscribe(new Action1<String>() {
+new QRCodeObservable(mSurfaceView).subscribe(new Subscriber<String>() {
             @Override
-            public void call(String s) {  //replace your code here
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(String s) {
                 Toast.makeText(RxMainActivity.this, "qrcode is " + s, Toast.LENGTH_LONG).show();
             }
-        });
+        });               
 ````
-##  Agera support
+##  Agera Version
 you still have to do step1 and step2.                        
 
-step3, init a QRCodeScannerRepository,and in resume method call addUpdatable method.                   
+step3, init a repository,and in onResume() method call addUpdatable method.                   
 
 ````
-mRepository = new QRCodeScannerRepository().surfaceView(mSurfaceView).scanView(mScanView);
-mRepository.addUpdatable(this);      
+repository = new QRCodeCameraRepository(this, mSurfaceView);
+
+repository.addUpdatable(this);     
 ````
 step4, don't forget let your activity/fragment/view implement Updatable interface,because that is the qrcode scan result callback.           
 
@@ -91,14 +101,14 @@ class AgeraMainActivity extends AppCompatActivity implements Updatable
 ````
 
 ##Todo             
-* ~~support [RxJava](https://github.com/ReactiveX/RxJava)~~
-* ~~support [agera](https://github.com/google/agera)~~
-* enable Activity lifecyle control   
+* ~~[RxJava](https://github.com/ReactiveX/RxJava) version~~
+* ~~[agera](https://github.com/google/agera) version~~
  
 ##  Other
         
 * If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
-* In agera branch,the whole project is currently almost rewrited in agera style.
+* There may be some state control issure.
+* In RxJava and Agera version,there is no ScanView yet..
 
 Check the code to know more details !
 

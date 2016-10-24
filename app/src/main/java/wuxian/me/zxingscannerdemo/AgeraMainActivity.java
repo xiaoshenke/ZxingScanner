@@ -18,7 +18,6 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
     private ScanView mScanView;
     private SurfaceView mSurfaceView;
 
-    //private QRCodeScannerRepository oldRepository;
     private QRCodeCameraRepository repository;
 
     @Override
@@ -27,7 +26,6 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
         setContentView(R.layout.activity_main);
         initView();
 
-        //oldRepository = new QRCodeScannerRepository().surfaceView(mSurfaceView).scanView(mScanView);
         repository = new QRCodeCameraRepository(this, mSurfaceView);
     }
 
@@ -39,7 +37,6 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
     @Override
     public void onResume() {
         super.onResume();
-        //oldRepository.addUpdatable(this);
 
         repository.addUpdatable(this);
     }
@@ -47,7 +44,6 @@ public class AgeraMainActivity extends AppCompatActivity implements Updatable {
     @Override
     protected void onPause() {
         super.onPause();
-        //oldRepository.removeUpdatable(this);
 
         repository.removeUpdatable(this);
     }

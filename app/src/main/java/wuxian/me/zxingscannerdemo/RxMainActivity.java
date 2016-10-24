@@ -47,23 +47,12 @@ public class RxMainActivity extends AppCompatActivity {
                 Toast.makeText(RxMainActivity.this, "qrcode is " + s, Toast.LENGTH_LONG).show();
             }
         });
-
-        /*
-        RxQRCodeScanner.getInstance().surfaceView(mSurfaceView).scanView(mScanView).scan().subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-                Toast.makeText(RxMainActivity.this, "qrcode is " + s, Toast.LENGTH_LONG).show();
-            }
-        });
-        */
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         RxCamera.getInstance(this).closeCamera();
-
-        //RxQRCodeScanner.getInstance().stop();
     }
 
     @Override

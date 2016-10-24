@@ -10,6 +10,7 @@ import wuxian.me.zxingscanner.share.preview.PreviewData;
 
 /**
  * Created by wuxian on 23/10/2016.
+ *
  * Todo: Rxjava error handling?
  */
 

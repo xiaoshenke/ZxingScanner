@@ -10,6 +10,8 @@ import wuxian.me.zxingscanner.share.camera.RxCamera;
 
 /**
  * Created by wuxian on 23/10/2016.
+ *
+ * Todo add ScanView
  */
 
 public class QRCodeObservable {
