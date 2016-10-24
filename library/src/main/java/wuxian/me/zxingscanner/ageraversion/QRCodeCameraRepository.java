@@ -111,7 +111,7 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
         } catch (IOException e) {
             return;
         }
-        camera.setPreviewCallback(new RXPreviewCallback(camera.getConfigManager(), this));
+        camera.setPreviewCallback(new RXPreviewCallback(camera.getConfigManager()), this);
         camera.startPreview();
     }
 

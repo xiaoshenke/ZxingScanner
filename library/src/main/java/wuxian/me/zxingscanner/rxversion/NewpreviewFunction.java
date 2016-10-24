@@ -24,7 +24,6 @@ public class NewpreviewFunction implements Func1<PreviewData, String> {
     @Override
     public String call(PreviewData data) {
         Log.e(TAG, "in call data is " + data);
-
         try {
             return DecodeManager.getQrcodeFromPreviewData(context, data);
         } catch (DecodeException e) {

@@ -68,7 +68,7 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData
             } catch (IOException e) {
                 return;
             }
-            camera.setPreviewCallback(new RXPreviewCallback(camera.getConfigManager(), this));
+            camera.setPreviewCallback(new RXPreviewCallback(camera.getConfigManager()), this);
             camera.startPreview();
         }
     }

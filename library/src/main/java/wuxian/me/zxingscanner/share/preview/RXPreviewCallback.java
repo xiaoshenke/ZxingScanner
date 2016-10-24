@@ -15,8 +15,7 @@ public class RXPreviewCallback implements Camera.PreviewCallback {
     private CameraConfigurationManager manager;
     private boolean once = false;  //for test
 
-    public RXPreviewCallback(CameraConfigurationManager manager, OnNewpreview onNewpreview) {
-        this.onNewpreview = onNewpreview;
+    public RXPreviewCallback(CameraConfigurationManager manager) {
         this.manager = manager;
     }
 

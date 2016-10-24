@@ -35,6 +35,7 @@ dependencies {
     compile files('libs/zxing.jar')
 
     compile 'io.reactivex:rxjava:1.1.9'
+    compile 'io.reactivex:rxandroid:1.2.1'
 
     compile 'com.google.android.agera:agera:1.2.0-beta2'
 

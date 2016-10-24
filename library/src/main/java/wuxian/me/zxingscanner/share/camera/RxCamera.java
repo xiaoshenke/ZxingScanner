@@ -85,9 +85,12 @@ public class RxCamera implements ICamera {
     }
 
     @Override
-    public void setPreviewCallback(Camera.PreviewCallback callback) {
+    public void setPreviewCallback(Camera.PreviewCallback callback,OnNewpreview onNewpreview) {
         if (callback instanceof RXPreviewCallback) {
             mPreviewCallback = (RXPreviewCallback) callback;
+
+            mPreviewCallback.setOnNewpreview(onNewpreview);
+            this.newpreview = onNewpreview;
 
             if (camera != null) {
                 camera.setPreviewCallback(callback);
