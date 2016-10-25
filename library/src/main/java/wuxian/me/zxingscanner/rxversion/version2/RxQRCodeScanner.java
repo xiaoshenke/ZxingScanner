@@ -5,15 +5,11 @@ import android.view.SurfaceView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import wuxian.me.zxingscanner.rxversion.version1.NewpreviewFunction;
-import wuxian.me.zxingscanner.rxversion.version1.OnSubscribeFromCamera;
+import wuxian.me.zxingscanner.rxversion.NewpreviewFunction;
+import wuxian.me.zxingscanner.rxversion.OnSubscribeFromCamera;
 
 /**
  * Created by wuxian on 24/10/2016.
- * <p>
- * Todo: to be finished. new version of @QRCodeObservable
- *
- * Todo: Rxjava 不支持循环流??? ---> 似乎是的 重构?????????
  */
 
 public class RxQRCodeScanner {

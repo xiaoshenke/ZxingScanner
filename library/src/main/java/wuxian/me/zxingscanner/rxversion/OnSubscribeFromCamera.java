@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.rxversion.version1;
+package wuxian.me.zxingscanner.rxversion;
 
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -129,7 +129,9 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData
             if (child.isUnsubscribed()) {
                 return;
             }
-            child.onCompleted();
+            child.onCompleted();  // --> 导致OperatorObservedOn.ObserveOnSubscriber.finished = true
+            // --> 导致进入不了NewpreviewFunction不会调到call....
+            // --> RxJava到处都是坑 受不了了
         }
     }
 }

@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.rxversion.version1;
+package wuxian.me.zxingscanner.rxversion;
 
 import android.content.Context;
 import android.util.Log;
@@ -25,10 +25,12 @@ public class NewpreviewFunction implements Func1<PreviewData, String> {
     @Override
     public String call(PreviewData data) {
         Log.e(TAG, "in call data is " + data);
+
         try {
             return DecodeManager.getQrcodeFromPreviewData(context, data);
         } catch (DecodeException e) {
             return null;
         }
+
     }
 }

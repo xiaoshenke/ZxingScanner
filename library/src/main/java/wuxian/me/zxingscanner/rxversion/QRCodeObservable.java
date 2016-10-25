@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.rxversion.version1;
+package wuxian.me.zxingscanner.rxversion;
 
 import android.view.SurfaceView;
 
@@ -6,15 +6,12 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import wuxian.me.zxingscanner.rxversion.version2.OperatorQRResult;
 import wuxian.me.zxingscanner.share.camera.QRCodeCamera;
 
 /**
  * Created by wuxian on 23/10/2016.
  *
  * Todo add ScanView
- *
- * Todo refactor: according to @rxBroadcastReceiver
  */
 
 public class QRCodeObservable {
@@ -50,6 +47,7 @@ public class QRCodeObservable {
             public void onNext(String s) {
                 if (s == null) {
                     QRCodeCamera.getInstance(surfaceView.getContext()).requestPreview();
+                    observable.subscribe(getQrSubscriber());
                 } else {
                     subscriber.onNext(s);
                     QRCodeCamera.getInstance(surfaceView.getContext()).stopPreview();
@@ -65,11 +63,11 @@ public class QRCodeObservable {
         observable = Observable.create(new OnSubscribeFromCamera(surfaceView))
                 .observeOn(Schedulers.newThread())
                 .map(new NewpreviewFunction(surfaceView.getContext()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .lift(new OperatorQRResult(surfaceView.getContext()));
+                .observeOn(AndroidSchedulers.mainThread());
+        //.lift(new OperatorQRResult(surfaceView.getContext()));
 
         this.subscriber = subscriber;
-        observable.subscribe(subscriber);
+        observable.subscribe(getQrSubscriber());
     }
 
 }
