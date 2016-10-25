@@ -5,11 +5,8 @@ import android.view.SurfaceView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import wuxian.me.zxingscanner.rxversion.NewpreviewFunction;
-import wuxian.me.zxingscanner.rxversion.OnSubscribeFromCamera;
-import wuxian.me.zxingscanner.share.camera.RxCamera;
+import wuxian.me.zxingscanner.share.camera.QRCodeCamera;
 
 /**
  * Created by wuxian on 23/10/2016.
@@ -51,11 +48,11 @@ public class QRCodeObservable {
             @Override
             public void onNext(String s) {
                 if (s == null) {
-                    RxCamera.getInstance(surfaceView.getContext()).requestPreview();
+                    QRCodeCamera.getInstance(surfaceView.getContext()).requestPreview();
                     observable.subscribe(getQrSubscriber());
                 } else {
                     subscriber.onNext(s);
-                    RxCamera.getInstance(surfaceView.getContext()).stopPreview();
+                    QRCodeCamera.getInstance(surfaceView.getContext()).stopPreview();
                 }
             }
         };

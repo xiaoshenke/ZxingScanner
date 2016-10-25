@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.rxversion;
+package wuxian.me.zxingscanner.rxversion.version1;
 
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import rx.Observable;
 import rx.Producer;
 import rx.Subscriber;
-import wuxian.me.zxingscanner.share.camera.RxCamera;
+import wuxian.me.zxingscanner.share.camera.QRCodeCamera;
 import wuxian.me.zxingscanner.share.preview.RXPreviewCallback;
 import wuxian.me.zxingscanner.share.camera.ICamera;
 import wuxian.me.zxingscanner.share.preview.OnNewpreview;
@@ -60,7 +60,7 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData
     }
 
     private void runCameraLoop() {
-        camera = RxCamera.getInstance(surfaceView.getContext());
+        camera = QRCodeCamera.getInstance(surfaceView.getContext());
 
         if (!camera.isInpreview()) {
             try {

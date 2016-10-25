@@ -17,7 +17,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import wuxian.me.zxingscanner.share.camera.CameraConfigurationManager;
-import wuxian.me.zxingscanner.share.camera.RxCamera;
+import wuxian.me.zxingscanner.share.camera.QRCodeCamera;
 import wuxian.me.zxingscanner.share.preview.PreviewData;
 import wuxian.me.zxingscanner.share.view.ViewfinderResultPointCallback;
 
@@ -76,7 +76,7 @@ public final class DecodeManager {
     }
 
     private static Rect getFramingRect(Context context) {
-        CameraConfigurationManager configManager = RxCamera.getInstance(context).getConfigManager();
+        CameraConfigurationManager configManager = QRCodeCamera.getInstance(context).getConfigManager();
         if (configManager == null) {
             return null;
         }
@@ -99,7 +99,7 @@ public final class DecodeManager {
             return null;
         }
 
-        CameraConfigurationManager configManager = RxCamera.getInstance(context).getConfigManager();
+        CameraConfigurationManager configManager = QRCodeCamera.getInstance(context).getConfigManager();
 
         Rect rect = new Rect(frameRect);
         Point cameraResolution = configManager.getCameraResolution();
@@ -113,7 +113,7 @@ public final class DecodeManager {
     }
 
     private static PlanarYUVLuminanceSource getSourceFromPreviewData(Context context, PreviewData previewData) {
-        CameraConfigurationManager configManager = RxCamera.getInstance(context).getConfigManager();
+        CameraConfigurationManager configManager = QRCodeCamera.getInstance(context).getConfigManager();
         if (configManager == null) {
             return null;
         }

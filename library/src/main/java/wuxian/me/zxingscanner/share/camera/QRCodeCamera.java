@@ -15,13 +15,13 @@ import wuxian.me.zxingscanner.share.preview.OnNewpreview;
  * Created by wuxian on 20/10/2016.
  */
 
-public class RxCamera implements ICamera {
+public class QRCodeCamera implements ICamera {
 
     private OnNewpreview newpreview;
     private RxAutoFocusCallback autoFocusCallback;
     private AutofocusHandler autofocusHandler;
 
-    private static RxCamera rxCamera;
+    private static QRCodeCamera QRCodeCamera;
     private Camera camera;
 
     private boolean isPreviewing = false;
@@ -31,16 +31,16 @@ public class RxCamera implements ICamera {
     private Context context;
     private boolean initialized = false;
 
-    private RxCamera(Context context) {
+    private QRCodeCamera(Context context) {
         this.context = context;
     }
 
-    public static RxCamera getInstance(Context context) {
-        if (rxCamera == null) {
-            rxCamera = new RxCamera(context);
+    public static QRCodeCamera getInstance(Context context) {
+        if (QRCodeCamera == null) {
+            QRCodeCamera = new QRCodeCamera(context);
         }
 
-        return rxCamera;
+        return QRCodeCamera;
     }
 
     @Override

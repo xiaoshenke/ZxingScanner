@@ -1,11 +1,11 @@
-package wuxian.me.zxingscanner.rxversion;
+package wuxian.me.zxingscanner.rxversion.version2;
 
 import android.content.Context;
 import android.text.TextUtils;
 
 import rx.Observable;
 import rx.Subscriber;
-import wuxian.me.zxingscanner.share.camera.RxCamera;
+import wuxian.me.zxingscanner.share.camera.QRCodeCamera;
 
 /**
  * Created by wuxian on 25/10/2016.
@@ -54,12 +54,12 @@ public class OperatorQRResult implements Observable.Operator<String, String> {
         @Override
         public void onNext(String s) {
             if (TextUtils.isEmpty(s)) {
-                RxCamera.getInstance(context).requestPreview();
+                QRCodeCamera.getInstance(context).requestPreview();
 
-                observable.unsafeSubscribe(child);  //??? problem?? --> 重新走流程
+                observable.unsafeSubscribe(child);  //FIXME: 停止当前的subscriber 并重新发射一个subscriber
             } else {
                 child.onNext(s);
-                RxCamera.getInstance(context).stopPreview();
+                QRCodeCamera.getInstance(context).stopPreview();
             }
 
         }

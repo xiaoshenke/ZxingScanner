@@ -7,8 +7,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.google.android.agera.BaseObservable;
-import com.google.android.agera.Function;
-import com.google.android.agera.Receiver;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Result;
@@ -18,7 +16,8 @@ import com.google.android.agera.Updatable;
 import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import wuxian.me.zxingscanner.share.camera.RxCamera;
+
+import wuxian.me.zxingscanner.share.camera.QRCodeCamera;
 import wuxian.me.zxingscanner.share.preview.RXPreviewCallback;
 import wuxian.me.zxingscanner.share.camera.ICamera;
 import wuxian.me.zxingscanner.share.preview.OnNewpreview;
@@ -102,7 +101,7 @@ public class QRCodeCameraRepository extends BaseObservable implements Supplier<S
      * 打开摄像头 此时android内置的camera会定时发送"照片截图"
      */
     private void runCameraLoop() {
-        camera = RxCamera.getInstance(context);
+        camera = QRCodeCamera.getInstance(context);
         try {
             camera.openCamera(surfaceHolder);
         } catch (IOException e) {

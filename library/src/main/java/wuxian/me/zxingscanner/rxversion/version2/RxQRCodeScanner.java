@@ -1,16 +1,19 @@
-package wuxian.me.zxingscanner.rxversion;
+package wuxian.me.zxingscanner.rxversion.version2;
 
 import android.view.SurfaceView;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subjects.BehaviorSubject;
+import wuxian.me.zxingscanner.rxversion.version1.NewpreviewFunction;
+import wuxian.me.zxingscanner.rxversion.version1.OnSubscribeFromCamera;
 
 /**
  * Created by wuxian on 24/10/2016.
  * <p>
  * Todo: to be finished. new version of @QRCodeObservable
+ *
+ * Todo: Rxjava 不支持循环流??? ---> 似乎是的 重构?????????
  */
 
 public class RxQRCodeScanner {

@@ -1,4 +1,4 @@
-package wuxian.me.zxingscanner.rxversion;
+package wuxian.me.zxingscanner.rxversion.version1;
 
 import android.content.Context;
 import android.util.Log;
