@@ -3,6 +3,9 @@ package wuxian.me.zxingscanner.rxversion;
 import android.view.SurfaceView;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 
 /**
  * Created by wuxian on 24/10/2016.
@@ -17,6 +20,14 @@ public class RxQRCodeScanner {
 
     public static Observable<String> sufaceView(SurfaceView surfaceView) {
 
-        return null;
+        if (surfaceView == null) {
+            throw new AssertionError("surfaceview is null");
+        }
+
+        Observable<String> ret = Observable.create(new OnSubscribeFromCamera(surfaceView))
+                .observeOn(Schedulers.newThread())
+                .map(new NewpreviewFunction(surfaceView.getContext()))
+                .observeOn(AndroidSchedulers.mainThread());
+        return ret.lift(new OperatorQRResult(surfaceView.getContext(), ret));
     }
 }

@@ -5,6 +5,7 @@ import android.view.SurfaceView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import wuxian.me.zxingscanner.rxversion.NewpreviewFunction;
 import wuxian.me.zxingscanner.rxversion.OnSubscribeFromCamera;
@@ -28,6 +29,11 @@ public class QRCodeObservable {
         this.surfaceView = surfaceView;
     }
 
+    /**
+     * refactor using @OperatorQRResult
+     *
+     * @return
+     */
     private Subscriber<String> getQrSubscriber() {
         if (subscriber == null) {
             throw new IllegalStateException("subscriber is null!");
