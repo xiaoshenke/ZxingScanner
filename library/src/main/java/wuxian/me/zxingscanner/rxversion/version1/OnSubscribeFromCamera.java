@@ -21,6 +21,7 @@ import wuxian.me.zxingscanner.share.preview.PreviewData;
  */
 
 public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData>, OnNewpreview {
+    private static final String TAG = "OnSubscribeFromCamera";
     private SurfaceHolder surfaceHolder;
     private SurfaceView surfaceView;
     private Subscriber subscriber;
@@ -75,10 +76,21 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData
 
     @Override
     public void onNewPreview(PreviewData data) {
+        Log.e(TAG, "onNewPreview");
         subscriber.setProducer(new NewPreviewProducer(subscriber, data));
-        //or just
-        // subscribe.call(data);
-        // subscribe.onComplete();
+
+        /*
+        Log.e(TAG,"subscribe.isUnsubscribed is "+subscriber.isUnsubscribed());
+        if (subscriber.isUnsubscribed()) {
+            return;
+        }
+        subscriber.onNext(data);
+
+        if (subscriber.isUnsubscribed()) {
+            return;
+        }
+        subscriber.onCompleted();
+        */
     }
 
     @Override
@@ -108,6 +120,7 @@ public class OnSubscribeFromCamera implements Observable.OnSubscribe<PreviewData
         public void request(long n) {
 
             Log.e(TAG, "request");
+            Log.e(TAG, "subscribe.isUnsubscribed is " + child.isUnsubscribed());
             if (child.isUnsubscribed()) {
                 return;
             }

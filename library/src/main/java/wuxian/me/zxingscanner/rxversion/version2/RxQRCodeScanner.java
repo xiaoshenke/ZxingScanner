@@ -31,6 +31,6 @@ public class RxQRCodeScanner {
                 .observeOn(Schedulers.newThread())
                 .map(new NewpreviewFunction(surfaceView.getContext()))
                 .observeOn(AndroidSchedulers.mainThread());
-        return ret.lift(new OperatorQRResult(surfaceView.getContext(), ret));
+        return ret.lift(new OperatorQRResult(surfaceView.getContext()));
     }
 }

@@ -21,9 +21,9 @@ public class OperatorQRResult implements Observable.Operator<String, String> {
     private Context context;
     private Observable observable;
 
-    public OperatorQRResult(Context context, Observable observable) {
+    public OperatorQRResult(Context context) {
         this.context = context;
-        this.observable = observable;
+        //this.observable = observable;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class OperatorQRResult implements Observable.Operator<String, String> {
             if (TextUtils.isEmpty(s)) {
                 QRCodeCamera.getInstance(context).requestPreview();
 
-                observable.unsafeSubscribe(child);  //FIXME: 停止当前的subscriber 并重新发射一个subscriber
+                //observable.unsafeSubscribe(child);  //FIXME: 停止当前的subscriber 并重新发射一个subscriber
             } else {
                 child.onNext(s);
                 QRCodeCamera.getInstance(context).stopPreview();
