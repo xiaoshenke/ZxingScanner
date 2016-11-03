@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion rootProject.ext.androidCompilesdkversion
+    buildToolsVersion rootProject.ext.androidBuildtoolsversion
     defaultConfig {
         applicationId "wuxian.me.zxingscanner.demo"
-        minSdkVersion 15
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.androidMinsdkversion
+        targetSdkVersion rootProject.ext.androidTargetsdkversion
+        versionCode rootProject.ext.androidVersioncode
+        versionName rootProject.ext.androidVersionname
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -28,8 +28,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile "com.android.support:appcompat-v7:$rootProject.ext.supportAndroidVersion"
     compile project(':library')
-    testCompile 'junit:junit:4.12'
+    testCompile "junit:junit:$rootProject.ext.junitVersion"
 
+    compile 'com.android.support:design:23.4.0'
 }

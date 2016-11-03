@@ -57,9 +57,9 @@ the third paramer is the qrcode result callback.
 
 wola,now you have successfully integrated QRCode function to your application!  
 
-##  RxJava Version
-you still have to do step1 and step2.           
-step3, In your onResume method,new a QRCodeObservable,then subscribe your Subscriber.                  
+##  ~~RxJava Version~~
+~~you still have to do step1 and step2. ~~          
+~~step3, In your onResume method,new a QRCodeObservable,then subscribe your Subscriber.  ~~                
                   
 
 ````
@@ -76,7 +76,7 @@ new QRCodeObservable(mSurfaceView).subscribe(new Subscriber<String>() {
             public void onNext(String s) {
                 Toast.makeText(RxMainActivity.this, "qrcode is " + s, Toast.LENGTH_LONG).show();
             }
-        });               
+        });     
 ````
 ##  Agera Version
 you still have to do step1 and step2.                        
@@ -108,7 +108,7 @@ class AgeraMainActivity extends AppCompatActivity implements Updatable
         
 * If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
 * There may be some state control issure.
-* In RxJava and Agera version,there is no ScanView yet..
+* Rx version has been moved to [RxQRCodeScanner](https://github.com/xiaoshenke/RxQRCodeScanner)
 
 Check the code to know more details !
 

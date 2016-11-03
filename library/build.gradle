@@ -1,14 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion rootProject.ext.androidCompilesdkversion
+    buildToolsVersion rootProject.ext.androidBuildtoolsversion
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.androidMinsdkversion
+        targetSdkVersion rootProject.ext.androidTargetsdkversion
+        versionCode rootProject.ext.androidVersioncode
+        versionName rootProject.ext.androidVersionname
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -30,21 +30,21 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    testCompile 'junit:junit:4.12'
+    compile "com.android.support:appcompat-v7:$rootProject.ext.supportAndroidVersion"
+    testCompile "junit:junit:$rootProject.ext.junitVersion"
     compile files('libs/zxing.jar')
 
-    compile 'io.reactivex:rxjava:1.1.9'
-    compile 'io.reactivex:rxandroid:1.2.1'
+    compile "io.reactivex:rxjava:$rootProject.ext.reactivexRxjavaVersion"
+    compile "io.reactivex:rxandroid:$rootProject.ext.reactivexRxandroidVersion"
 
-    compile 'com.google.android.agera:agera:1.2.0-beta2'
+    compile "com.google.android.agera:agera:$rootProject.ext.ageraAndroidVersion"
 
     /*
-    compile 'com.trello:rxlifecycle:0.8.0'
+    compile "com.trello:rxlifecycle:$rootProject.ext.rxlifecycleVersion"
     // If you want to bind to Android-specific lifecycles
-    compile 'com.trello:rxlifecycle-android:0.8.0'
+    compile "com.trello:rxlifecycle-android:$rootProject.ext.rxlifecycleandroidVersion"
     // If you want pre-written Activities and Fragments you can subclass as providers
-    compile 'com.trello:rxlifecycle-components:0.8.0'
+    compile "com.trello:rxlifecycle-components:$rootProject.ext.rxlifecyclecomponentsVersion"
     */
 
 }
