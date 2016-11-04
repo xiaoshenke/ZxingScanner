@@ -24,7 +24,6 @@ import wuxian.me.zxingscanner.share.view.ViewfinderResultPointCallback;
 /**
  * Created by wuxian on 24/10/2016.
  * <p>
- * Todo: to be finished.
  */
 
 public final class DecodeManager {

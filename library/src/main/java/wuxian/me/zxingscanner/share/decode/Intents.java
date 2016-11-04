@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner.normalversion.decoding;
+package wuxian.me.zxingscanner.share.decode;
 
 /**
  * This class provides the constants to use when sending an Intent to Barcode

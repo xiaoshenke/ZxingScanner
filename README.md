@@ -57,9 +57,9 @@ the third paramer is the qrcode result callback.
 
 wola,now you have successfully integrated QRCode function to your application!  
 
-##  ~~RxJava Version~~
-~~you still have to do step1 and step2. ~~          
-~~step3, In your onResume method,new a QRCodeObservable,then subscribe your Subscriber.  ~~                
+##  RxJava Version
+you still have to do step1 and step2.           
+step3, In your onResume method,new a QRCodeObservable,then subscribe your Subscriber.                
                   
 
 ````
@@ -108,7 +108,7 @@ class AgeraMainActivity extends AppCompatActivity implements Updatable
         
 * If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
 * There may be some state control issure.
-* Rx version has been moved to [RxQRCodeScanner](https://github.com/xiaoshenke/RxQRCodeScanner)
+* RxJava version will be rewrite in the future....
 
 Check the code to know more details !
 
