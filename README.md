@@ -57,27 +57,6 @@ the third paramer is the qrcode result callback.
 
 wola,now you have successfully integrated QRCode function to your application!  
 
-##  RxJava Version
-you still have to do step1 and step2.           
-step3, In your onResume method,new a QRCodeObservable,then subscribe your Subscriber.                
-                  
-
-````
-new QRCodeObservable(mSurfaceView).subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(String s) {
-                Toast.makeText(RxMainActivity.this, "qrcode is " + s, Toast.LENGTH_LONG).show();
-            }
-        });     
-````
 ##  Agera Version
 you still have to do step1 and step2.                        
 
@@ -101,14 +80,12 @@ class AgeraMainActivity extends AppCompatActivity implements Updatable
 ````
 
 ##Todo             
-* ~~[RxJava](https://github.com/ReactiveX/RxJava) version~~
 * ~~[agera](https://github.com/google/agera) version~~
  
 ##  Other
         
 * If you aren't satisfied with the sanner ui,you can implement IViewfinder to custom your own ui. 
-* There may be some state control issure.
-* RxJava version will be rewrite in the future....
+* A rxjava version zxingscanner is available in [RxQRCodeScanner](https://github.com/xiaoshenke/RxQRCodeScanner)
 
 Check the code to know more details !
 
