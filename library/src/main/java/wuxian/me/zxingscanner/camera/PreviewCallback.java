@@ -26,13 +26,13 @@ public final class PreviewCallback implements Camera.PreviewCallback {
 
     private static final String TAG = PreviewCallback.class.getSimpleName();
 
-    private final CameraConfigurationManager configManager;
+    private final CameraConfigMgr configManager;
     private final boolean useOneShotPreviewCallback;
     private Handler previewHandler;
     private int previewMessage;
 
-    public PreviewCallback(CameraConfigurationManager configManager,
-                    boolean useOneShotPreviewCallback) {
+    public PreviewCallback(CameraConfigMgr configManager,
+                           boolean useOneShotPreviewCallback) {
         this.configManager = configManager;
         this.useOneShotPreviewCallback = useOneShotPreviewCallback;
     }

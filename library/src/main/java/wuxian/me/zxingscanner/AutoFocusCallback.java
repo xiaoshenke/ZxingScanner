@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner.camera;
+package wuxian.me.zxingscanner;
 
 import android.hardware.Camera;
 import android.os.Handler;

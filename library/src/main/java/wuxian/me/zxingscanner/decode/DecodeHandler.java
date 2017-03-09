@@ -32,17 +32,17 @@ import com.google.zxing.common.HybridBinarizer;
 import java.util.Hashtable;
 
 import wuxian.me.zxingscanner.R;
-import wuxian.me.zxingscanner.CameraManager;
+import wuxian.me.zxingscanner.camera.Camera;
 
-final class DecodeHandler extends Handler {
+public final class DecodeHandler extends Handler {
 
     private static final String TAG = DecodeHandler.class.getSimpleName();
 
     private Handler handler;
     private final MultiFormatReader multiFormatReader;
 
-    DecodeHandler(Handler handler,
-                  Hashtable<DecodeHintType, Object> hints) {
+    public DecodeHandler(Handler handler,
+                         Hashtable<DecodeHintType, Object> hints) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
         this.handler = handler;
@@ -82,8 +82,8 @@ final class DecodeHandler extends Handler {
         data = rotatedData;
         long start = System.currentTimeMillis();
         Result rawResult = null;
-        PlanarYUVLuminanceSource source = CameraManager.get()
-                .buildLuminanceSource(data, width, height);
+        PlanarYUVLuminanceSource source = Camera.get()
+                .buildLuminanceSource(data, width, height);  //Fixme --> 这里不应该用get
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
         try {
             rawResult = multiFormatReader.decodeWithState(bitmap);

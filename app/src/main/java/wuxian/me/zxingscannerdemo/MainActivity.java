@@ -9,17 +9,17 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
+import java.io.IOException;
+
 import wuxian.me.zxingscanner.QRCodeScannerImpl;
-import wuxian.me.zxingscanner.decode.IDecodeResultHandler;
-import wuxian.me.zxingscanner.decode.InactivityTimer;
+import wuxian.me.zxingscanner.decode.IDecodeResult;
 import wuxian.me.zxingscanner.demo.R;
 import wuxian.me.zxingscanner.scanview.ScanView;
 
 
-public class MainActivity extends AppCompatActivity implements IDecodeResultHandler {
+public class MainActivity extends AppCompatActivity implements IDecodeResult {
     private ScanView mScanView;
     private SurfaceView mSurfaceView;
-    private InactivityTimer mTimer;
     private QRCodeScannerImpl mQRCodeScanner;
 
     @Override
@@ -27,13 +27,18 @@ public class MainActivity extends AppCompatActivity implements IDecodeResultHand
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        mQRCodeScanner = new QRCodeScannerImpl(mSurfaceView, mScanView, this);
+
+        try {
+            mQRCodeScanner = new QRCodeScannerImpl(mSurfaceView, mScanView, this);
+        } catch (IOException e) {
+            finish();
+        }
+
     }
 
     private void initView() {
         mSurfaceView = (SurfaceView) findViewById(R.id.surface);
         mScanView = (ScanView) findViewById(R.id.viewfinder);
-        mTimer = new InactivityTimer(this);
     }
 
     @Override
@@ -51,24 +56,12 @@ public class MainActivity extends AppCompatActivity implements IDecodeResultHand
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mTimer != null) {
-            mTimer.shutdown();
-        }
     }
 
     @Override
-    public void handleDecodeSuccess(Result result, Bitmap bitmap) {
-        if (mTimer != null) {
-            mTimer.onActivity();
-        }
-
+    public void handleDecode(Result result, Bitmap bitmap) {
         final String code = result.getText().trim();
-
         if (!TextUtils.isEmpty(code)) {
-            if (mTimer != null) {
-                mTimer.shutdown();
-                mTimer = null;
-            }
             Toast.makeText(this, "QRCode is " + code, Toast.LENGTH_LONG).show();
         }
 

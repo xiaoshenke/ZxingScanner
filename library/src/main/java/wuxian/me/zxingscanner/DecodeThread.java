@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner.decode;
+package wuxian.me.zxingscanner;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -26,6 +26,9 @@ import com.google.zxing.ResultPointCallback;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
+
+import wuxian.me.zxingscanner.decode.DecodeFormatManager;
+import wuxian.me.zxingscanner.decode.DecodeHandler;
 
 /**
  * @author dswitkin@google.com (Daniel Switkin)

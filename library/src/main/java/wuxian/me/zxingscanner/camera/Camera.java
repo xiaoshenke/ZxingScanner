@@ -14,32 +14,27 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner;
+package wuxian.me.zxingscanner.camera;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.hardware.Camera;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.Nullable;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+
 import java.io.IOException;
 
-import wuxian.me.zxingscanner.camera.AutoFocusCallback;
-import wuxian.me.zxingscanner.camera.CameraConfigurationManager;
-import wuxian.me.zxingscanner.camera.PreviewCallback;
+import wuxian.me.zxingscanner.AutoFocusCallback;
 import wuxian.me.zxingscanner.decode.PlanarYUVLuminanceSource;
 
-/**
- * @author dswitkin@google.com (Daniel Switkin)
- */
-public final class CameraManager {
 
-    private static final String TAG = CameraManager.class.getSimpleName();
-    private static CameraManager cameraManager;
+public final class Camera {
+    private static Camera sCamera;
     public static final int SDK_INT;
 
     static {
@@ -47,73 +42,112 @@ public final class CameraManager {
         try {
             sdkInt = Integer.parseInt(Build.VERSION.SDK);
         } catch (NumberFormatException nfe) {
-            // Just to be safe
             sdkInt = 10000;
         }
         SDK_INT = sdkInt;
     }
 
-    private final Context context;
-    private final CameraConfigurationManager configManager;
-    private Camera camera;
+    private CameraConfigMgr mConfigMgr;
+
+    @NonNull
+    public CameraConfigMgr getConfig() {
+        return mConfigMgr;
+    }
+
+    private android.hardware.Camera camera = null;
     private Rect framingRect;
     private Rect framingRectForDraw;
     private Rect framingRectInPreview;
-    private boolean initialized;
-    private boolean previewing;
-    private final boolean useOneShotPreviewCallback;
-    /**
-     * Preview frames are delivered here, which we pass on to the registered
-     * handler. Make sure to clear the handler so it will only receive one
-     * message.
-     */
+
+    private boolean mInited = false;
+    private boolean mInpreview = false;
+    private boolean mOneShot = false;
+
     private final PreviewCallback previewCallback;
-    /**
-     * Autofocus callbacks arrive here, and are dispatched to the Handler which
-     * requested them.
-     */
     private final AutoFocusCallback autoFocusCallback;
 
-    /**
-     * Initializes this static object with the Context of the calling Activity.
-     *
-     * @param context The Activity which wants to use the camera.
-     */
-    public static void init(Context context) {
-        if (cameraManager == null) {
-            cameraManager = new CameraManager(context);
-        }
-    }
-    public static CameraManager get() {
-        return cameraManager;
+    private ICameraListener mCameraListener;
+
+    public static Camera get() {
+        return sCamera;
     }
 
-    private CameraManager(Context context) {
-        this.context = context;
-        this.configManager = new CameraConfigurationManager(context);
-        useOneShotPreviewCallback = Integer.parseInt(Build.VERSION.SDK) > 3; // 3
-        previewCallback = new PreviewCallback(configManager,
-                useOneShotPreviewCallback);
+    public static Camera getInstance(Context context) {
+        if (sCamera == null) {
+            sCamera = new Camera(context);
+        }
+        return sCamera;
+    }
+
+    private Camera(@NonNull Context context) {
+        this.mConfigMgr = new CameraConfigMgr(context);
+
+        mOneShot = Integer.parseInt(Build.VERSION.SDK) > 3;
+
+        previewCallback = new PreviewCallback(mConfigMgr, mOneShot);
         autoFocusCallback = new AutoFocusCallback();
     }
 
-    public void openDriver(@NonNull SurfaceHolder holder) throws IOException {
+    private void openCameraAndSetPreviewInner(SurfaceHolder holder) {
         if (camera == null) {
-            camera = Camera.open();
-            if (camera == null) {
-                throw new IOException();
+            try {
+                camera = android.hardware.Camera.open();
+                if (camera == null) {
+                    throw new IOException();
+                }
+                camera.setPreviewDisplay(holder);
+            } catch (IOException e) {
+                if (mCameraListener != null) {
+                    mCameraListener.onOpenError();
+                }
             }
-            camera.setPreviewDisplay(holder);
 
-            if (!initialized) {
-                initialized = true;
-                configManager.initFromCameraParameters(camera);
+            if (!mInited) {
+                mInited = true;
+                mConfigMgr.initFromCameraParameters(camera);
             }
-            configManager.setDesiredCameraParameters(camera);
+            mConfigMgr.setDesiredCameraParameters(camera);
         }
+
+        startPreview();
     }
 
-    public void closeDriver() {
+    private boolean mHasSurface;
+    private SurfaceHolder.Callback mCallback = new SurfaceHolder.Callback() {
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+            if (!mHasSurface) {
+                mHasSurface = true;
+            }
+            openCameraAndSetPreviewInner(holder);
+            if (mCameraListener != null) {
+                mCameraListener.onCameraOpen();
+            }
+        }
+
+        @Override
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            mHasSurface = false;
+        }
+    };
+
+
+    public void openAndDisplay(@NonNull SurfaceView surfaceView,
+                               @Nullable ICameraListener listener) throws IOException {
+        mCameraListener = listener;
+
+        mHasSurface = false;
+        SurfaceHolder surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        surfaceHolder.addCallback(mCallback);
+    }
+
+
+    public void closeCamera() {
         if (camera != null) {
             camera.release();
             camera = null;
@@ -121,28 +155,28 @@ public final class CameraManager {
     }
 
     public void startPreview() {
-        if (camera != null && !previewing) {
+        if (camera != null && !mInpreview) {
             camera.startPreview();
-            previewing = true;
+            mInpreview = true;
         }
     }
 
     public void stopPreview() {
-        if (camera != null && previewing) {
-            if (!useOneShotPreviewCallback) {
+        if (camera != null && mInpreview) {
+            if (!mOneShot) {
                 camera.setPreviewCallback(null);
             }
             camera.stopPreview();
             previewCallback.setHandler(null, 0);
             autoFocusCallback.setHandler(null, 0);
-            previewing = false;
+            mInpreview = false;
         }
     }
 
     public void requestPreviewFrame(Handler handler, int message) {
-        if (camera != null && previewing) {
+        if (camera != null && mInpreview) {
             previewCallback.setHandler(handler, message);
-            if (useOneShotPreviewCallback) {
+            if (mOneShot) {
                 camera.setOneShotPreviewCallback(previewCallback);
             } else {
                 camera.setPreviewCallback(previewCallback);
@@ -151,32 +185,28 @@ public final class CameraManager {
     }
 
     public void requestAutoFocus(Handler handler, int message) {
-        if (camera != null && previewing) {
+        if (camera != null && mInpreview) {
             autoFocusCallback.setHandler(handler, message);
-            // Log.d(TAG, "Requesting auto-focus callback");
             camera.autoFocus(autoFocusCallback);
         }
     }
 
     public Rect getFramingRect() {
-        Point screenResolution = configManager.getScreenResolution();
+        Point screenResolution = mConfigMgr.getScreenResolution();
         if (framingRect == null) {
-            if (camera == null) {
-                return null;
-            }
             int width = screenResolution.x;
             int height = screenResolution.y;
             int leftOffset = (screenResolution.x - width) / 2;
             int topOffset = (screenResolution.y - height) / 3;
             framingRect = new Rect(leftOffset, topOffset, leftOffset + width,
                     topOffset + height);
-            Log.d(TAG, "Calculated framing rect: " + framingRect);
+
         }
         return framingRect;
     }
 
     public Rect getFramingRectForDraw() {
-        Point screenResolution = configManager.getScreenResolution();
+        Point screenResolution = mConfigMgr.getScreenResolution();
         if (framingRectForDraw == null) {
             if (camera == null) {
                 return null;
@@ -204,8 +234,8 @@ public final class CameraManager {
     public Rect getFramingRectInPreview() {
         if (framingRectInPreview == null) {
             Rect rect = new Rect(getFramingRect());
-            Point cameraResolution = configManager.getCameraResolution();
-            Point screenResolution = configManager.getScreenResolution();
+            Point cameraResolution = mConfigMgr.getCameraResolution();
+            Point screenResolution = mConfigMgr.getScreenResolution();
             rect.left = rect.left * cameraResolution.y / screenResolution.x;
             rect.right = rect.right * cameraResolution.y / screenResolution.x;
             rect.top = rect.top * cameraResolution.x / screenResolution.y;
@@ -218,8 +248,8 @@ public final class CameraManager {
     public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data,
                                                          int width, int height) {
         Rect rect = getFramingRectInPreview();
-        int previewFormat = configManager.getPreviewFormat();
-        String previewFormatString = configManager.getPreviewFormatString();
+        int previewFormat = mConfigMgr.getPreviewFormat();
+        String previewFormatString = mConfigMgr.getPreviewFormatString();
         switch (previewFormat) {
             case PixelFormat.YCbCr_420_SP:
             case PixelFormat.YCbCr_422_SP:
@@ -235,16 +265,14 @@ public final class CameraManager {
                 + previewFormat + '/' + previewFormatString);
     }
 
-    public float getScreenDensity() {
-        if (configManager != null) {
-            return configManager.getScreenDensity();
-        } else {
-            return -1.0f;
-        }
-    }
-
     public void destory() {
         stopPreview();
-        closeDriver();
+        closeCamera();
+    }
+
+    public interface ICameraListener {
+        void onCameraOpen();
+
+        void onOpenError();
     }
 }
