@@ -22,8 +22,8 @@ package wuxian.me.zxingscanner.decode;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class Intents {
-    private Intents() {
+public final class DecodeConstants {
+    private DecodeConstants() {
     }
 
     public static final class Scan {

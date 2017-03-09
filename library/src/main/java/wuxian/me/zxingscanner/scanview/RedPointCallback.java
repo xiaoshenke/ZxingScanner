@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner.decode;
+package wuxian.me.zxingscanner.scanview;
 
 import com.google.zxing.ResultPoint;
 import com.google.zxing.ResultPointCallback;
 
-import wuxian.me.zxingscanner.scanview.IScanView;
+public final class RedPointCallback implements ResultPointCallback {
 
-public final class ViewfinderResultPointCallback implements ResultPointCallback {
+    private final IScanView mScanview;
 
-    private final IScanView viewfinderView;
-
-    public ViewfinderResultPointCallback(IScanView viewfinderView) {
-        this.viewfinderView = viewfinderView;
+    public RedPointCallback(IScanView viewfinderView) {
+        this.mScanview = viewfinderView;
     }
 
     public void foundPossibleResultPoint(ResultPoint point) {
-        if (viewfinderView != null) {
-            viewfinderView.addPossibleResultPoint(point);
+        if (mScanview != null) {
+            mScanview.addRedPoint(point);
         }
 
     }

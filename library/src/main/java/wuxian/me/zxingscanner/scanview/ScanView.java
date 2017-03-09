@@ -34,6 +34,7 @@ import java.util.HashSet;
 
 import wuxian.me.zxingscanner.R;
 import wuxian.me.zxingscanner.camera.Camera;
+import wuxian.me.zxingscanner.decode.DecodeUtil;
 
 public final class ScanView extends View implements IScanView {
 
@@ -79,10 +80,10 @@ public final class ScanView extends View implements IScanView {
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (Camera.get() == null) {
+        if (Camera.getInstance(getContext()) == null) {
             return;
         }
-        Rect frame = Camera.get().getFramingRectForDraw();
+        Rect frame = DecodeUtil.getFramingRectForDraw(getContext());
         if (frame == null) {
             return;
         }
@@ -212,7 +213,7 @@ public final class ScanView extends View implements IScanView {
     }
 
     @Override
-    public void addPossibleResultPoint(ResultPoint point) {
+    public void addRedPoint(ResultPoint point) {
         possibleResultPoints.add(point);
     }
 

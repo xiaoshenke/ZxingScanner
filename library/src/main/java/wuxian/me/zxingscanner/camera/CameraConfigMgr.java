@@ -20,109 +20,70 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-import java.util.regex.Pattern;
-
-import wuxian.me.zxingscanner.decode.CameraUtil;
-
 public final class CameraConfigMgr {
-
-    private static final String TAG = CameraConfigMgr.class
-            .getSimpleName();
 
     private static final int TEN_DESIRED_ZOOM = 27;
     private static final int DESIRED_SHARPNESS = 30;
 
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
-
     private final Context context;
-    private Point screenResolution;
-    private Point cameraResolution;
-    private int previewFormat;
-    private String previewFormatString;
-    private float screenDensity;
+    private Point mScreenResolution;
+    private Point mCameraResolution;
+    private int mPreviewFormat;
+    private String mPreviewFormatString;
+
+    public Point getCameraResolution() {
+        return mCameraResolution;
+    }
+
+    public Point getScreenResolution() {
+        return mScreenResolution;
+    }
+
+    public int getPreviewFormat() {
+        return mPreviewFormat;
+    }
+
+    public String getPreviewFormatString() {
+        return mPreviewFormatString;
+    }
 
     public CameraConfigMgr(Context context) {
         this.context = context;
     }
 
-    /**
-     * Reads, one time, values from the camera that are needed by the app.
-     */
-    public void initFromCameraParameters(android.hardware.Camera camera) {
+    public void init(android.hardware.Camera camera) {
         android.hardware.Camera.Parameters parameters = camera.getParameters();
-        previewFormat = parameters.getPreviewFormat();
-        previewFormatString = parameters.get("preview-format");
-        WindowManager manager = (WindowManager) context
-                .getSystemService(Context.WINDOW_SERVICE);
-        Display display = manager.getDefaultDisplay();
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
-        screenDensity = dm.scaledDensity;
-        screenResolution = new Point(display.getWidth(), display.getHeight());
-        Point screenResolutionForCamera = new Point();
-        screenResolutionForCamera.x = screenResolution.x;
-        screenResolutionForCamera.y = screenResolution.y;
-        if (screenResolution.x < screenResolution.y) {
-            screenResolutionForCamera.x = screenResolution.y;
-            screenResolutionForCamera.y = screenResolution.x;
+        mPreviewFormat = parameters.getPreviewFormat();
+        mPreviewFormatString = parameters.get("preview-format");
+
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        mScreenResolution = new Point(display.getWidth(), display.getHeight());  //拿到屏幕
+
+        Point screenRes = new Point();
+        screenRes.x = this.mScreenResolution.x;
+        screenRes.y = this.mScreenResolution.y;
+        if (this.mScreenResolution.x < this.mScreenResolution.y) {
+            screenRes.x = this.mScreenResolution.y;
+            screenRes.y = this.mScreenResolution.x;
         }
-        cameraResolution = CameraUtil.getCameraResolution(parameters,
-                screenResolutionForCamera);
+        mCameraResolution = CameraUtil.getCameraResolution(parameters, screenRes);//拿到相机数据
     }
 
     @SuppressLint("NewApi")
-    public void setDesiredCameraParameters(android.hardware.Camera camera) {
+    public void setDesiredParameters(android.hardware.Camera camera) {
         android.hardware.Camera.Parameters parameters = camera.getParameters();
-        Log.d(TAG, "Camera resolution:222 " + cameraResolution);
-        parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
-        setFlash(parameters);
-        setZoom(parameters);
+        parameters.setPreviewSize(mCameraResolution.x, mCameraResolution.y);
+        initFlash(parameters);
+        initZoom(parameters);
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);
     }
 
-    public Point getCameraResolution() {
-        return cameraResolution;
-    }
-
-    public Point getScreenResolution() {
-        return screenResolution;
-    }
-
-    public int getPreviewFormat() {
-        return previewFormat;
-    }
-
-    public String getPreviewFormatString() {
-        return previewFormatString;
-    }
-
-    private static int findBestMotZoomValue(CharSequence stringValues,
-                                            int tenDesiredZoom) {
-        int tenBestValue = 0;
-        for (String stringValue : COMMA_PATTERN.split(stringValues)) {
-            stringValue = stringValue.trim();
-            double value;
-            try {
-                value = Double.parseDouble(stringValue);
-            } catch (NumberFormatException nfe) {
-                return tenDesiredZoom;
-            }
-            int tenValue = (int) (10.0 * value);
-            if (Math.abs(tenDesiredZoom - value) < Math.abs(tenDesiredZoom
-                    - tenBestValue)) {
-                tenBestValue = tenValue;
-            }
-        }
-        return tenBestValue;
-    }
-
-    private void setFlash(android.hardware.Camera.Parameters parameters) {
+    private void initFlash(android.hardware.Camera.Parameters parameters) {
         if (Build.MODEL.contains("Behold II") && Camera.SDK_INT == 3) { // 3
             parameters.set("flash-value", 1);
         } else {
@@ -131,7 +92,7 @@ public final class CameraConfigMgr {
         parameters.set("flash-mode", "off");
     }
 
-    private void setZoom(android.hardware.Camera.Parameters parameters) {
+    private void initZoom(android.hardware.Camera.Parameters parameters) {
 
         String zoomSupportedString = parameters.get("zoom-supported");
         if (zoomSupportedString != null
@@ -150,7 +111,6 @@ public final class CameraConfigMgr {
                     tenDesiredZoom = tenMaxZoom;
                 }
             } catch (NumberFormatException nfe) {
-                Log.w(TAG, "Bad max-zoom: " + maxZoomString);
             }
         }
 
@@ -163,14 +123,12 @@ public final class CameraConfigMgr {
                     tenDesiredZoom = tenMaxZoom;
                 }
             } catch (NumberFormatException nfe) {
-                Log.w(TAG, "Bad taking-picture-zoom-max: "
-                        + takingPictureZoomMaxString);
             }
         }
 
         String motZoomValuesString = parameters.get("mot-zoom-values");
         if (motZoomValuesString != null) {
-            tenDesiredZoom = findBestMotZoomValue(motZoomValuesString,
+            tenDesiredZoom = CameraUtil.findBestMotZoomValue(motZoomValuesString,
                     tenDesiredZoom);
         }
 
@@ -195,9 +153,4 @@ public final class CameraConfigMgr {
             parameters.set("taking-picture-zoom", tenDesiredZoom);
         }
     }
-
-    public float screenDensity() {
-        return screenDensity;
-    }
-
 }

@@ -23,15 +23,15 @@ import com.google.zxing.LuminanceSource;
 /**
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class PlanarYUVLuminanceSource extends LuminanceSource {
+public final class PlanarYUVSource extends LuminanceSource {
     private final byte[] yuvData;
     private final int dataWidth;
     private final int dataHeight;
     private final int left;
     private final int top;
 
-    public PlanarYUVLuminanceSource(byte[] yuvData, int dataWidth,
-                                    int dataHeight, int left, int top, int width, int height) {
+    public PlanarYUVSource(byte[] yuvData, int dataWidth,
+                           int dataHeight, int left, int top, int width, int height) {
         super(width, height);
 
         if (left + width > dataWidth || top + height > dataHeight) {
@@ -66,10 +66,6 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
         int width = getWidth();
         int height = getHeight();
 
-        // If the caller asks for the entire underlying image, save the copy and
-        // give them the
-        // original data. The docs specifically warn that result.length must be
-        // ignored.
         if (width == dataWidth && height == dataHeight) {
             return yuvData;
         }
@@ -78,14 +74,11 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
         byte[] matrix = new byte[area];
         int inputOffset = top * dataWidth + left;
 
-        // If the width matches the full width of the underlying data, perform a
-        // single copy.
         if (width == dataWidth) {
             System.arraycopy(yuvData, inputOffset, matrix, 0, area);
             return matrix;
         }
 
-        // Otherwise copy one cropped row at a time.
         byte[] yuv = yuvData;
         for (int y = 0; y < height; y++) {
             int outputOffset = y * width;

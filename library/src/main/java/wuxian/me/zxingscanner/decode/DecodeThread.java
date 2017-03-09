@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner;
+package wuxian.me.zxingscanner.decode;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -27,8 +27,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
-import wuxian.me.zxingscanner.decode.DecodeFormatManager;
-import wuxian.me.zxingscanner.decode.DecodeHandler;
+import wuxian.me.zxingscanner.camera.Camera;
 
 /**
  * @author dswitkin@google.com (Daniel Switkin)
@@ -42,19 +41,22 @@ public class DecodeThread extends Thread {
     private DecodeHandler decodeHandler;
     private final CountDownLatch handlerInitLatch;
 
-    public DecodeThread(Handler captureHandler,
+    private Camera camera;
+
+    public DecodeThread(Camera camera, Handler captureHandler,
                         String characterSet,
                         ResultPointCallback resultPointCallback) {
 
+        this.camera = camera;
         this.captureHandler = captureHandler;
         handlerInitLatch = new CountDownLatch(1);
 
         hints = new Hashtable<DecodeHintType, Object>(3);
 
         Vector<BarcodeFormat> decodeFormats = new Vector<BarcodeFormat>();
-        decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
-        decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
-        decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
+        decodeFormats.addAll(DecodeFormatMgr.ONE_D_FORMATS);
+        decodeFormats.addAll(DecodeFormatMgr.QR_CODE_FORMATS);
+        decodeFormats.addAll(DecodeFormatMgr.DATA_MATRIX_FORMATS);
 
         hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
 
@@ -78,7 +80,7 @@ public class DecodeThread extends Thread {
     @Override
     public void run() {
         Looper.prepare();
-        decodeHandler = new DecodeHandler(captureHandler, hints);
+        decodeHandler = new DecodeHandler(camera, captureHandler, hints);
         handlerInitLatch.countDown();
         Looper.loop();
     }

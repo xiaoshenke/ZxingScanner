@@ -1,7 +1,6 @@
-package wuxian.me.zxingscanner.decode;
+package wuxian.me.zxingscanner.camera;
 
 import android.graphics.Point;
-import android.util.Log;
 
 import java.util.regex.Pattern;
 
@@ -12,6 +11,26 @@ import java.util.regex.Pattern;
 public class CameraUtil {
 
     private CameraUtil() {
+    }
+
+    public static int findBestMotZoomValue(CharSequence stringValues,
+                                           int tenDesiredZoom) {
+        int tenBestValue = 0;
+        for (String stringValue : COMMA_PATTERN.split(stringValues)) {
+            stringValue = stringValue.trim();
+            double value;
+            try {
+                value = Double.parseDouble(stringValue);
+            } catch (NumberFormatException nfe) {
+                return tenDesiredZoom;
+            }
+            int tenValue = (int) (10.0 * value);
+            if (Math.abs(tenDesiredZoom - value) < Math.abs(tenDesiredZoom
+                    - tenBestValue)) {
+                tenBestValue = tenValue;
+            }
+        }
+        return tenBestValue;
     }
 
     //拿到相机size？

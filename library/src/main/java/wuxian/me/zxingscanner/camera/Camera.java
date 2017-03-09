@@ -17,9 +17,6 @@
 package wuxian.me.zxingscanner.camera;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -29,8 +26,8 @@ import android.view.SurfaceView;
 
 import java.io.IOException;
 
-import wuxian.me.zxingscanner.AutoFocusCallback;
-import wuxian.me.zxingscanner.decode.PlanarYUVLuminanceSource;
+import wuxian.me.zxingscanner.decode.AutoFocusCallback;
+import wuxian.me.zxingscanner.decode.PreviewCallback;
 
 
 public final class Camera {
@@ -55,9 +52,6 @@ public final class Camera {
     }
 
     private android.hardware.Camera camera = null;
-    private Rect framingRect;
-    private Rect framingRectForDraw;
-    private Rect framingRectInPreview;
 
     private boolean mInited = false;
     private boolean mInpreview = false;
@@ -67,10 +61,6 @@ public final class Camera {
     private final AutoFocusCallback autoFocusCallback;
 
     private ICameraListener mCameraListener;
-
-    public static Camera get() {
-        return sCamera;
-    }
 
     public static Camera getInstance(Context context) {
         if (sCamera == null) {
@@ -104,9 +94,9 @@ public final class Camera {
 
             if (!mInited) {
                 mInited = true;
-                mConfigMgr.initFromCameraParameters(camera);
+                mConfigMgr.init(camera);
             }
-            mConfigMgr.setDesiredCameraParameters(camera);
+            mConfigMgr.setDesiredParameters(camera);
         }
 
         startPreview();
@@ -189,80 +179,6 @@ public final class Camera {
             autoFocusCallback.setHandler(handler, message);
             camera.autoFocus(autoFocusCallback);
         }
-    }
-
-    public Rect getFramingRect() {
-        Point screenResolution = mConfigMgr.getScreenResolution();
-        if (framingRect == null) {
-            int width = screenResolution.x;
-            int height = screenResolution.y;
-            int leftOffset = (screenResolution.x - width) / 2;
-            int topOffset = (screenResolution.y - height) / 3;
-            framingRect = new Rect(leftOffset, topOffset, leftOffset + width,
-                    topOffset + height);
-
-        }
-        return framingRect;
-    }
-
-    public Rect getFramingRectForDraw() {
-        Point screenResolution = mConfigMgr.getScreenResolution();
-        if (framingRectForDraw == null) {
-            if (camera == null) {
-                return null;
-            }
-            int width = screenResolution.x * 2 / 3;
-            int height = screenResolution.y * 2 / 3;
-            if (width >= height) {
-                width = height;
-            } else {
-                height = width;
-            }
-
-            int leftOffset = (screenResolution.x - width) / 2;
-            int topOffset = (screenResolution.y - height) / 3;
-            framingRectForDraw = new Rect(leftOffset, topOffset, leftOffset
-                    + width, topOffset + height);
-        }
-        return framingRectForDraw;
-    }
-
-    /**
-     * Like {@link #getFramingRect} but coordinates are in terms of the preview
-     * frame, not UI / screen.
-     */
-    public Rect getFramingRectInPreview() {
-        if (framingRectInPreview == null) {
-            Rect rect = new Rect(getFramingRect());
-            Point cameraResolution = mConfigMgr.getCameraResolution();
-            Point screenResolution = mConfigMgr.getScreenResolution();
-            rect.left = rect.left * cameraResolution.y / screenResolution.x;
-            rect.right = rect.right * cameraResolution.y / screenResolution.x;
-            rect.top = rect.top * cameraResolution.x / screenResolution.y;
-            rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;
-            framingRectInPreview = rect;
-        }
-        return framingRectInPreview;
-    }
-
-    public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data,
-                                                         int width, int height) {
-        Rect rect = getFramingRectInPreview();
-        int previewFormat = mConfigMgr.getPreviewFormat();
-        String previewFormatString = mConfigMgr.getPreviewFormatString();
-        switch (previewFormat) {
-            case PixelFormat.YCbCr_420_SP:
-            case PixelFormat.YCbCr_422_SP:
-                return new PlanarYUVLuminanceSource(data, width, height, rect.left,
-                        rect.top, rect.width(), rect.height());
-            default:
-                if ("yuv420p".equals(previewFormatString)) {
-                    return new PlanarYUVLuminanceSource(data, width, height,
-                            rect.left, rect.top, rect.width(), rect.height());
-                }
-        }
-        throw new IllegalArgumentException("Unsupported picture format: "
-                + previewFormat + '/' + previewFormatString);
     }
 
     public void destory() {

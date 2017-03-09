@@ -9,7 +9,7 @@ import com.google.zxing.ResultPoint;
  * a viewfinder should be able to
  * 1 drawScanFrame  --> a red or whatever color line scan from top down
  * 2 stopDrawViewFinder
- * 3 addPossibleResultPoint --> draw some small circle around all possible result point
+ * 3 addRedPoint --> draw some small circle around all possible result point
  */
 
 public interface IScanView {
@@ -18,5 +18,5 @@ public interface IScanView {
 
     void stopDrawScanFrame();
 
-    void addPossibleResultPoint(ResultPoint resultPoint);
+    void addRedPoint(ResultPoint resultPoint);
 }

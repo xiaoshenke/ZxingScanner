@@ -12,7 +12,6 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.google.zxing.Result;
@@ -20,8 +19,8 @@ import com.google.zxing.Result;
 import java.io.IOException;
 
 import wuxian.me.zxingscanner.camera.Camera;
-import wuxian.me.zxingscanner.decode.IDecodeResult;
-import wuxian.me.zxingscanner.decode.ViewfinderResultPointCallback;
+import wuxian.me.zxingscanner.decode.DecodeThread;
+import wuxian.me.zxingscanner.scanview.RedPointCallback;
 import wuxian.me.zxingscanner.scanview.IScanView;
 
 import static android.content.Context.AUDIO_SERVICE;
@@ -35,7 +34,7 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
 
     private DecodeManager mDecodeManager;
     private Context mContext;
-    private IDecodeResult mResultHandler;
+    private IScanResult mResultHandler;
     private SurfaceView mSurfaceView;
     private Camera mCamera;
     private boolean mCameraReady = false;
@@ -58,7 +57,7 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
 
     public QRCodeScannerImpl(@NonNull SurfaceView surfaceView,
                              @Nullable IScanView scanView,
-                             @NonNull final IDecodeResult handler) throws IOException {
+                             @NonNull final IScanResult handler) throws IOException {
         mSurfaceView = surfaceView;
         mScanView = scanView;
         mContext = mSurfaceView.getContext();
@@ -68,13 +67,13 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
         mDecodeManager = new DecodeManager();
         mDecodeManager.setState(DecodeManager.DONE);
 
-        mResultHandler = new IDecodeResult() {
+        mResultHandler = new IScanResult() {
             @Override
-            public void handleDecode(Result result, Bitmap bitmap) {
+            public void onScanResult(Result result, Bitmap bitmap) {
                 playBeep();
                 playVibrate();
                 if (handler != null) {
-                    handler.handleDecode(result, bitmap);
+                    handler.onScanResult(result, bitmap);
                 }
             }
         };
@@ -199,8 +198,8 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
 
     private void startDecodeThread() {
         if (mDecodeThread == null) {
-            mDecodeThread = new DecodeThread(mDecodeManager, null,
-                    new ViewfinderResultPointCallback(mScanView));
+            mDecodeThread = new DecodeThread(mCamera, mDecodeManager, null,
+                    new RedPointCallback(mScanView));
             mDecodeThread.start();
         }
     }
@@ -264,7 +263,7 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
                 Bitmap barcode = bundle == null ? null : (Bitmap) bundle
                         .getParcelable(DecodeThread.BARCODE_BITMAP);
                 if (mResultHandler != null) {
-                    mResultHandler.handleDecode((Result) message.obj, barcode);
+                    mResultHandler.onScanResult((Result) message.obj, barcode);
                 }
             } else if (message.what == R.id.decode_failed) {
                 mCurrentState = PREVIEW;

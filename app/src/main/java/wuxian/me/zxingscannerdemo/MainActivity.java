@@ -12,12 +12,12 @@ import com.google.zxing.Result;
 import java.io.IOException;
 
 import wuxian.me.zxingscanner.QRCodeScannerImpl;
-import wuxian.me.zxingscanner.decode.IDecodeResult;
+import wuxian.me.zxingscanner.IScanResult;
 import wuxian.me.zxingscanner.demo.R;
 import wuxian.me.zxingscanner.scanview.ScanView;
 
 
-public class MainActivity extends AppCompatActivity implements IDecodeResult {
+public class MainActivity extends AppCompatActivity implements IScanResult {
     private ScanView mScanView;
     private SurfaceView mSurfaceView;
     private QRCodeScannerImpl mQRCodeScanner;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements IDecodeResult {
     }
 
     @Override
-    public void handleDecode(Result result, Bitmap bitmap) {
+    public void onScanResult(Result result, Bitmap bitmap) {
         final String code = result.getText().trim();
         if (!TextUtils.isEmpty(code)) {
             Toast.makeText(this, "QRCode is " + code, Toast.LENGTH_LONG).show();

@@ -41,8 +41,11 @@ public final class DecodeHandler extends Handler {
     private Handler handler;
     private final MultiFormatReader multiFormatReader;
 
-    public DecodeHandler(Handler handler,
+    private Camera camera;
+
+    public DecodeHandler(Camera camera, Handler handler,
                          Hashtable<DecodeHintType, Object> hints) {
+        this.camera = camera;
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
         this.handler = handler;
@@ -82,8 +85,8 @@ public final class DecodeHandler extends Handler {
         data = rotatedData;
         long start = System.currentTimeMillis();
         Result rawResult = null;
-        PlanarYUVLuminanceSource source = Camera.get()
-                .buildLuminanceSource(data, width, height);  //Fixme --> 这里不应该用get
+        PlanarYUVSource source = DecodeUtil
+                .buildLuminanceSource(camera, data, width, height);
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
         try {
             rawResult = multiFormatReader.decodeWithState(bitmap);
@@ -101,10 +104,7 @@ public final class DecodeHandler extends Handler {
                     handler,
                     R.id.decode_succeeded, rawResult);
             Bundle bundle = new Bundle();
-            // bundle.putParcelable(DecodeThread.BARCODE_BITMAP,
-            // source.renderCroppedGreyscaleBitmap());
             message.setData(bundle);
-            // Log.d(TAG, "Sending decode succeeded message...");
             message.sendToTarget();
         } else {
             Message message = Message.obtain(

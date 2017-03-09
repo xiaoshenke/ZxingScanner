@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner.camera;
+package wuxian.me.zxingscanner.decode;
 
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import wuxian.me.zxingscanner.camera.CameraConfigMgr;
 
 public final class PreviewCallback implements Camera.PreviewCallback {
 
