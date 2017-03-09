@@ -32,7 +32,7 @@ import com.google.zxing.common.HybridBinarizer;
 import java.util.Hashtable;
 
 import wuxian.me.zxingscanner.R;
-import wuxian.me.zxingscanner.camera.CameraManager;
+import wuxian.me.zxingscanner.CameraManager;
 
 final class DecodeHandler extends Handler {
 

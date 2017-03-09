@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package wuxian.me.zxingscanner.camera;
+package wuxian.me.zxingscanner;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -23,10 +23,14 @@ import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import java.io.IOException;
 
+import wuxian.me.zxingscanner.camera.AutoFocusCallback;
+import wuxian.me.zxingscanner.camera.CameraConfigurationManager;
+import wuxian.me.zxingscanner.camera.PreviewCallback;
 import wuxian.me.zxingscanner.decode.PlanarYUVLuminanceSource;
 
 /**
@@ -93,7 +97,7 @@ public final class CameraManager {
         autoFocusCallback = new AutoFocusCallback();
     }
 
-    public void openDriver(SurfaceHolder holder) throws IOException {
+    public void openDriver(@NonNull SurfaceHolder holder) throws IOException {
         if (camera == null) {
             camera = Camera.open();
             if (camera == null) {

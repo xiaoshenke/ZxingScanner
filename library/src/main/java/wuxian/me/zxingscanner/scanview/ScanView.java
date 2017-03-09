@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import wuxian.me.zxingscanner.R;
-import wuxian.me.zxingscanner.camera.CameraManager;
+import wuxian.me.zxingscanner.CameraManager;
 
 public final class ScanView extends View implements IScanView {
 

@@ -40,7 +40,7 @@ public class DecodeThread extends Thread {
     private final CountDownLatch handlerInitLatch;
 
     public DecodeThread(Handler captureHandler,
-                        Vector<BarcodeFormat> decodeFormats, String characterSet,
+                        String characterSet,
                         ResultPointCallback resultPointCallback) {
 
         this.captureHandler = captureHandler;
@@ -48,13 +48,10 @@ public class DecodeThread extends Thread {
 
         hints = new Hashtable<DecodeHintType, Object>(3);
 
-        if (decodeFormats == null || decodeFormats.isEmpty()) {
-            decodeFormats = new Vector<BarcodeFormat>();
-            decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
-            decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
-            decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
-
-        }
+        Vector<BarcodeFormat> decodeFormats = new Vector<BarcodeFormat>();
+        decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
+        decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
+        decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
 
         hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
 

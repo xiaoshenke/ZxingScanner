@@ -28,6 +28,8 @@ import android.view.WindowManager;
 
 import java.util.regex.Pattern;
 
+import wuxian.me.zxingscanner.CameraManager;
+
 public final class CameraConfigurationManager {
 
     private static final String TAG = CameraConfigurationManager.class

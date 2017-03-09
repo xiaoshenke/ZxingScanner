@@ -39,13 +39,13 @@ public class MainActivity extends AppCompatActivity implements IDecodeResultHand
     @Override
     public void onResume() {
         super.onResume();
-        mQRCodeScanner.onActivityResume();
+        mQRCodeScanner.startScan();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mQRCodeScanner.onActivityPause();
+        mQRCodeScanner.quit();
     }
 
     @Override

@@ -34,4 +34,6 @@ dependencies {
     testCompile "junit:junit:$rootProject.ext.junitVersion"
     compile files('libs/zxing.jar')
 
+    compile "com.google.guava:guava:18.0"
+
 }
