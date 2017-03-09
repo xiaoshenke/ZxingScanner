@@ -6,6 +6,7 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,7 +20,9 @@ import com.google.zxing.Result;
 import java.io.IOException;
 
 import wuxian.me.zxingscanner.camera.Camera;
+import wuxian.me.zxingscanner.decode.DecodeConstants;
 import wuxian.me.zxingscanner.decode.DecodeThread;
+import wuxian.me.zxingscanner.decode.PreviewCallback;
 import wuxian.me.zxingscanner.scanview.RedPointCallback;
 import wuxian.me.zxingscanner.scanview.IScanView;
 
@@ -32,7 +35,7 @@ import static android.content.Context.VIBRATOR_SERVICE;
 
 public final class QRCodeScannerImpl implements IQRCodeScaner {
 
-    private DecodeManager mDecodeManager;
+    private DecodeStateHandler mDecodeStateHandler;
     private Context mContext;
     private IScanResult mResultHandler;
     private SurfaceView mSurfaceView;
@@ -64,8 +67,8 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
         mCamera = Camera.getInstance(mContext.getApplicationContext());
         mCamera.openAndDisplay(surfaceView, mCameraListener);
 
-        mDecodeManager = new DecodeManager();
-        mDecodeManager.setState(DecodeManager.DONE);
+        mDecodeStateHandler = new DecodeStateHandler();
+        mDecodeStateHandler.setState(DecodeStateHandler.DONE);
 
         mResultHandler = new IScanResult() {
             @Override
@@ -142,14 +145,14 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
     @Override
     public void startScan() {
         //it should be in STATE.DONE
-        if (mDecodeManager.getCurrentState() != DecodeManager.DONE) {
+        if (mDecodeStateHandler.getCurrentState() != DecodeStateHandler.DONE) {
             return;
         }
         startDecodeThread(); //不管有没有摄像机 开启解析线程
         maybeStartScan();
 
         if (mScanView != null) {
-            mScanView.drawScanFrame();                             //绘制扫描框
+            mScanView.drawScanFrame(); //绘制扫描框
         }
     }
 
@@ -159,28 +162,53 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
         }
     }
 
-    private void scanInternal() {
-        if (mDecodeManager.getCurrentState() == DecodeManager.SUCCESS) {
-            mDecodeManager.setState(DecodeManager.PREVIEW);
+    private PreviewCallback mPreviewCallback;
 
-            mCamera.requestPreviewFrame(mDecodeThread.getHandler(), R.id.decode);
-            mCamera.requestAutoFocus(mDecodeManager, R.id.auto_focus);  //截图每帧数据并发送给解析线程
+    private PreviewCallback getPreviewCallback() {
+        if (mPreviewCallback == null) {
+            mPreviewCallback = new PreviewCallback(
+                    mCamera.getConfig(),
+                    mDecodeThread.decodeHandler(),
+                    Integer.parseInt(Build.VERSION.SDK) > 3);
+        }
+        return mPreviewCallback;
+    }
+
+    private void scanInternal() {
+        if (mDecodeStateHandler.getCurrentState() == DecodeStateHandler.SUCCESS) {
+            mDecodeStateHandler.setState(DecodeStateHandler.PREVIEW);
+
+            startAutoFocus();
+            startRequestPreview();
+        }
+    }
+
+    private void startAutoFocus() {
+        if (mCamera != null) {
+            mCamera.startAutoFocus();
+        }
+    }
+
+    private void startRequestPreview() {
+        if (mCamera != null) {
+            mCamera.requestPreview(getPreviewCallback());
         }
     }
 
     public void quit() {
-        mDecodeManager.setState(DecodeManager.DONE);
-        mDecodeManager.unInit();
         stopScan();
-        destroyCamera();
         quitDecodeThread();
+        destroyCamera();
+        mDecodeStateHandler.setState(DecodeStateHandler.DONE);
+
     }
 
     private void stopScanInternal() {
-        mDecodeManager.removeMessages(R.id.auto_focus);
-        mDecodeThread.getHandler().removeMessages(R.id.decode);
-        mDecodeManager.setState(DecodeManager.SUCCESS);
+        mCamera.stopAutoFocus();
+        mDecodeThread.stopDecode();
+        mDecodeStateHandler.setState(DecodeStateHandler.SUCCESS);
     }
+
 
     @Override
     public void restartScan() {
@@ -198,26 +226,23 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
 
     private void startDecodeThread() {
         if (mDecodeThread == null) {
-            mDecodeThread = new DecodeThread(mCamera, mDecodeManager, null,
+            mDecodeThread = new DecodeThread(mCamera, mDecodeStateHandler, null,
                     new RedPointCallback(mScanView));
             mDecodeThread.start();
         }
     }
 
     private void quitDecodeThread() {
-        Message quit = Message.obtain(mDecodeThread.getHandler(), R.id.quit);
-        quit.sendToTarget();
+        mDecodeThread.stopThreadSafely();
         try {
             mDecodeThread.join();
         } catch (InterruptedException e) {
-            // continue
         }
         mDecodeThread = null;
     }
 
     private void destroyCamera() {
         if (mCamera != null) {
-            mCamera.stopPreview();
             mCamera.destory();
         }
     }
@@ -232,7 +257,7 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
         mVibrator.vibrate(VIBRATE_DURATION);
     }
 
-    public class DecodeManager extends Handler {
+    public class DecodeStateHandler extends Handler {
         public static final int PREVIEW = 0;
         public static final int SUCCESS = 1;
         public static final int DONE = 2;
@@ -245,17 +270,16 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
 
         public void setState(int state) {
             mCurrentState = state;
+
+            if (state == DONE) {
+                removeMessages(DecodeConstants.Action.ACTION_DECODE_SUCCESS);
+                removeMessages(DecodeConstants.Action.ACTION_DECODE_FAIL);
+            }
         }
 
         @Override
         public void handleMessage(Message message) {
-            if (message.what == R.id.auto_focus) {
-                if (mCurrentState == PREVIEW) {
-                    mCamera.requestAutoFocus(this, R.id.auto_focus);
-                }
-            } else if (message.what == R.id.restart_preview) {
-                restartScan();
-            } else if (message.what == R.id.decode_succeeded) {
+            if (message.what == DecodeConstants.Action.ACTION_DECODE_SUCCESS) {
                 mCurrentState = SUCCESS;
                 stopScan();
 
@@ -265,19 +289,11 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
                 if (mResultHandler != null) {
                     mResultHandler.onScanResult((Result) message.obj, barcode);
                 }
-            } else if (message.what == R.id.decode_failed) {
+            } else if (message.what == DecodeConstants.Action.ACTION_DECODE_FAIL) {
                 mCurrentState = PREVIEW;
-                if (mDecodeThread == null) {
-                    return;
-                }
-                mCamera.requestPreviewFrame(mDecodeThread.getHandler(),
-                        R.id.decode);
+                startRequestPreview();  //request another preview data
             }
         }
 
-        public void unInit() {
-            removeMessages(R.id.decode_succeeded);
-            removeMessages(R.id.decode_failed);
-        }
     }
 }

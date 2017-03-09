@@ -20,42 +20,34 @@ import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import wuxian.me.zxingscanner.camera.CameraConfigMgr;
 
 public final class PreviewCallback implements Camera.PreviewCallback {
 
-    private static final String TAG = PreviewCallback.class.getSimpleName();
+    private final CameraConfigMgr mConfigManager;
+    private final boolean mOneShot;
+    private Handler mDecodeHandler;
 
-    private final CameraConfigMgr configManager;
-    private final boolean useOneShotPreviewCallback;
-    private Handler previewHandler;
-    private int previewMessage;
-
-    public PreviewCallback(CameraConfigMgr configManager,
-                           boolean useOneShotPreviewCallback) {
-        this.configManager = configManager;
-        this.useOneShotPreviewCallback = useOneShotPreviewCallback;
+    public PreviewCallback(CameraConfigMgr configManager, Handler decodeHandler,
+                           boolean useOneShot) {
+        this.mDecodeHandler = decodeHandler;
+        this.mConfigManager = configManager;
+        this.mOneShot = useOneShot;
     }
 
-    public void setHandler(Handler previewHandler, int previewMessage) {
-        this.previewHandler = previewHandler;
-        this.previewMessage = previewMessage;
-    }
-
-    public void onPreviewFrame(byte[] data, Camera camera) {
-        Point cameraResolution = configManager.getCameraResolution();
-        if (!useOneShotPreviewCallback) {
+    public void onPreviewFrame(byte[] data, android.hardware.Camera camera) {
+        Point cameraResolution = mConfigManager.getCameraResolution();
+        if (mOneShot) {
+            camera.setOneShotPreviewCallback(null);
+        } else {
             camera.setPreviewCallback(null);
         }
-        if (previewHandler != null) {
-            Message message = previewHandler.obtainMessage(previewMessage,
+        if (mDecodeHandler != null) {
+            Message message = mDecodeHandler.obtainMessage(DecodeConstants.Action.ACTION_DO_DECODE,
                     cameraResolution.x, cameraResolution.y, data);
             message.sendToTarget();
-            previewHandler = null;
-        } else {
-            Log.d(TAG, "Got preview callback, but no handler for it");
+            mDecodeHandler = null;
         }
     }
 

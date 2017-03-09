@@ -84,7 +84,7 @@ public final class CameraConfigMgr {
     }
 
     private void initFlash(android.hardware.Camera.Parameters parameters) {
-        if (Build.MODEL.contains("Behold II") && Camera.SDK_INT == 3) { // 3
+        if (Build.MODEL.contains("Behold II") && CameraUtil.sdkInt() == 3) { // 3
             parameters.set("flash-value", 1);
         } else {
             parameters.set("flash-value", 2);

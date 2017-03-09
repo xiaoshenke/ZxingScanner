@@ -19,30 +19,19 @@ package wuxian.me.zxingscanner.camera;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
 import java.io.IOException;
 
-import wuxian.me.zxingscanner.decode.AutoFocusCallback;
+import wuxian.me.zxingscanner.decode.DecodeConstants;
 import wuxian.me.zxingscanner.decode.PreviewCallback;
 
 
 public final class Camera {
     private static Camera sCamera;
-    public static final int SDK_INT;
-
-    static {
-        int sdkInt;
-        try {
-            sdkInt = Integer.parseInt(Build.VERSION.SDK);
-        } catch (NumberFormatException nfe) {
-            sdkInt = 10000;
-        }
-        SDK_INT = sdkInt;
-    }
 
     private CameraConfigMgr mConfigMgr;
 
@@ -56,10 +45,6 @@ public final class Camera {
     private boolean mInited = false;
     private boolean mInpreview = false;
     private boolean mOneShot = false;
-
-    private final PreviewCallback previewCallback;
-    private final AutoFocusCallback autoFocusCallback;
-
     private ICameraListener mCameraListener;
 
     public static Camera getInstance(Context context) {
@@ -71,11 +56,7 @@ public final class Camera {
 
     private Camera(@NonNull Context context) {
         this.mConfigMgr = new CameraConfigMgr(context);
-
         mOneShot = Integer.parseInt(Build.VERSION.SDK) > 3;
-
-        previewCallback = new PreviewCallback(mConfigMgr, mOneShot);
-        autoFocusCallback = new AutoFocusCallback();
     }
 
     private void openCameraAndSetPreviewInner(SurfaceHolder holder) {
@@ -156,16 +137,15 @@ public final class Camera {
             if (!mOneShot) {
                 camera.setPreviewCallback(null);
             }
+            camera.setPreviewCallback(null);
             camera.stopPreview();
-            previewCallback.setHandler(null, 0);
-            autoFocusCallback.setHandler(null, 0);
+            stopAutoFocus();
             mInpreview = false;
         }
     }
 
-    public void requestPreviewFrame(Handler handler, int message) {
+    public void requestPreview(@NonNull PreviewCallback previewCallback) {
         if (camera != null && mInpreview) {
-            previewCallback.setHandler(handler, message);
             if (mOneShot) {
                 camera.setOneShotPreviewCallback(previewCallback);
             } else {
@@ -174,12 +154,43 @@ public final class Camera {
         }
     }
 
-    public void requestAutoFocus(Handler handler, int message) {
-        if (camera != null && mInpreview) {
-            autoFocusCallback.setHandler(handler, message);
-            camera.autoFocus(autoFocusCallback);
+
+    public void startAutoFocus() {
+        handler.sendEmptyMessage(DecodeConstants.Action.ACTION_AUTOFOCUS);
+    }
+
+    public void stopAutoFocus() {
+        handler.removeMessages(DecodeConstants.Action.ACTION_AUTOFOCUS);
+        if (camera != null) {
+            camera.autoFocus(null);
         }
     }
+
+    private static final long AUTOFOCUS_INTERVAL_MS = 1500L;
+
+
+    private android.hardware.Camera.AutoFocusCallback autoFocusCb = new android.hardware.Camera.AutoFocusCallback() {
+        @Override
+        public void onAutoFocus(boolean success, android.hardware.Camera camera) {
+            if (camera != null && mInpreview) {
+                camera.autoFocus(null);
+            }
+            Message msg = handler.obtainMessage(DecodeConstants.Action.ACTION_AUTOFOCUS);
+            handler.sendMessageDelayed(msg, AUTOFOCUS_INTERVAL_MS);
+
+        }
+    };
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == DecodeConstants.Action.ACTION_AUTOFOCUS) {
+                if (camera != null && mInpreview) {
+                    camera.autoFocus(autoFocusCb);
+                }
+            }
+        }
+    };
 
     public void destory() {
         stopPreview();

@@ -23,6 +23,15 @@ package wuxian.me.zxingscanner.decode;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class DecodeConstants {
+
+    public interface Action {
+        int ACTION_DO_DECODE = 101;
+        int ACTION_DECODE_SUCCESS = 102;
+        int ACTION_DECODE_FAIL = 103;
+        int ACTION_AUTOFOCUS = 104;
+        int ACTION_QUIT_DECODE = 105;
+    }
+
     private DecodeConstants() {
     }
 

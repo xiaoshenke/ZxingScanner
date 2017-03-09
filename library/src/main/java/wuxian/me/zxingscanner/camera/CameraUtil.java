@@ -1,6 +1,7 @@
 package wuxian.me.zxingscanner.camera;
 
 import android.graphics.Point;
+import android.os.Build;
 
 import java.util.regex.Pattern;
 
@@ -9,6 +10,22 @@ import java.util.regex.Pattern;
  */
 
 public class CameraUtil {
+
+    public static final int SDK_INT;
+
+    static {
+        int sdkInt;
+        try {
+            sdkInt = Integer.parseInt(Build.VERSION.SDK);
+        } catch (NumberFormatException nfe) {
+            sdkInt = 10000;
+        }
+        SDK_INT = sdkInt;
+    }
+
+    public static int sdkInt() {
+        return SDK_INT;
+    }
 
     private CameraUtil() {
     }
