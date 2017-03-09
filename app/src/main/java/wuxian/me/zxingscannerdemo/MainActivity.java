@@ -9,15 +9,14 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
-import wuxian.me.zxingscanner.normalversion.QRCodeScannerImpl;
-import wuxian.me.zxingscanner.normalversion.IDecodeResultHandler;
-import wuxian.me.zxingscanner.normalversion.decoding.InactivityTimer;
+import wuxian.me.zxingscanner.QRCodeScannerImpl;
+import wuxian.me.zxingscanner.decode.IDecodeResultHandler;
+import wuxian.me.zxingscanner.decode.InactivityTimer;
 import wuxian.me.zxingscanner.demo.R;
-import wuxian.me.zxingscanner.share.view.ScanView;
+import wuxian.me.zxingscanner.scanview.ScanView;
 
 
 public class MainActivity extends AppCompatActivity implements IDecodeResultHandler {
-
     private ScanView mScanView;
     private SurfaceView mSurfaceView;
     private InactivityTimer mTimer;
@@ -40,13 +39,13 @@ public class MainActivity extends AppCompatActivity implements IDecodeResultHand
     @Override
     public void onResume() {
         super.onResume();
-        mQRCodeScanner.onActivityResume();  //don't forget to call this!
+        mQRCodeScanner.onActivityResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mQRCodeScanner.onActivityPause();   //don't forget to call this!
+        mQRCodeScanner.onActivityPause();
     }
 
     @Override
@@ -70,10 +69,7 @@ public class MainActivity extends AppCompatActivity implements IDecodeResultHand
                 mTimer.shutdown();
                 mTimer = null;
             }
-            //replace your code
             Toast.makeText(this, "QRCode is " + code, Toast.LENGTH_LONG).show();
-        } else {
-            //something bad happens --> you can call mQRCodeScanner.restartScan
         }
 
     }

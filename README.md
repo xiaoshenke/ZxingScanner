@@ -3,7 +3,7 @@ A QRCode scanner library base on google [zxing](https://github.com/zxing/zxing).
 QRCode scan function is so common in an Android Application development,but zxing demo is difficult to use,and you have to modify many code.That is why I create this library.                     
 ZXingScanner is base on zxing,but much easier to use.You can interate QRCode scann funtion in just a few lines.                        
 
-##  Base version
+
 Step 1 add camera permission.In your AndroidManifest.xml          
 
 ````
@@ -55,32 +55,6 @@ the third paramer is the qrcode result callback.
     }
 ````
 
-wola,now you have successfully integrated QRCode function to your application!  
-
-##  Agera Version
-you still have to do step1 and step2.                        
-
-step3, init a repository,and in onResume() method call addUpdatable method.                   
-
-````
-repository = new QRCodeCameraRepository(this, mSurfaceView);
-
-repository.addUpdatable(this);     
-````
-step4, don't forget let your activity/fragment/view implement Updatable interface,because that is the qrcode scan result callback.           
-
-````
-class AgeraMainActivity extends AppCompatActivity implements Updatable
-
-@Override
-    public void update() { //replace your code here
-        Toast.makeText(this,"qrcode is "+mRepository.get(),Toast.LENGTH_LONG).show();
-    }
-      
-````
-
-##Todo             
-* ~~[agera](https://github.com/google/agera) version~~
  
 ##  Other
         
