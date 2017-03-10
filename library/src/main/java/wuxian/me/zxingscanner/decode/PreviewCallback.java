@@ -29,11 +29,17 @@ public final class PreviewCallback implements Camera.PreviewCallback {
     private final boolean mOneShot;
     private Handler mDecodeHandler;
 
+    private boolean mAnother = true;
+
     public PreviewCallback(CameraConfigMgr configManager, Handler decodeHandler,
                            boolean useOneShot) {
         this.mDecodeHandler = decodeHandler;
         this.mConfigManager = configManager;
         this.mOneShot = useOneShot;
+    }
+
+    public void setRequestAnother(boolean another) {
+        mAnother = another;
     }
 
     public void onPreviewFrame(byte[] data, android.hardware.Camera camera) {
@@ -43,11 +49,11 @@ public final class PreviewCallback implements Camera.PreviewCallback {
         } else {
             camera.setPreviewCallback(null);
         }
-        if (mDecodeHandler != null) {
+        if (mAnother) {
             Message message = mDecodeHandler.obtainMessage(DecodeConstants.Action.ACTION_DO_DECODE,
                     cameraResolution.x, cameraResolution.y, data);
             message.sendToTarget();
-            mDecodeHandler = null;
+            mAnother = false;
         }
     }
 

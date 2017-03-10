@@ -41,6 +41,7 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
     private SurfaceView mSurfaceView;
     private Camera mCamera;
     private boolean mCameraReady = false;
+    private boolean mDecodeThreadStart = false;
 
     @Nullable
     private IScanView mScanView;
@@ -144,6 +145,7 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
 
     @Override
     public void startScan() {
+        mStartScanCalled = true;
         //it should be in STATE.DONE
         if (mDecodeStateHandler.getCurrentState() != DecodeStateHandler.DONE) {
             return;
@@ -157,7 +159,7 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
     }
 
     private synchronized void maybeStartScan() {
-        if (mCameraReady && mStartScanCalled) {
+        if (mCameraReady && mStartScanCalled && mDecodeThreadStart) {
             scanInternal();
         }
     }
@@ -171,11 +173,12 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
                     mDecodeThread.decodeHandler(),
                     Integer.parseInt(Build.VERSION.SDK) > 3);
         }
+        mPreviewCallback.setRequestAnother(true);
         return mPreviewCallback;
     }
 
     private void scanInternal() {
-        if (mDecodeStateHandler.getCurrentState() == DecodeStateHandler.SUCCESS) {
+        if (mDecodeStateHandler.getCurrentState() == DecodeStateHandler.SUCCESS || mDecodeStateHandler.getCurrentState() == DecodeStateHandler.DONE) {
             mDecodeStateHandler.setState(DecodeStateHandler.PREVIEW);
 
             startAutoFocus();
@@ -205,7 +208,9 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
 
     private void stopScanInternal() {
         mCamera.stopAutoFocus();
-        mDecodeThread.stopDecode();
+        if (mDecodeThread != null) {
+            mDecodeThread.stopDecode();
+        }
         mDecodeStateHandler.setState(DecodeStateHandler.SUCCESS);
     }
 
@@ -229,16 +234,23 @@ public final class QRCodeScannerImpl implements IQRCodeScaner {
             mDecodeThread = new DecodeThread(mCamera, mDecodeStateHandler, null,
                     new RedPointCallback(mScanView));
             mDecodeThread.start();
+            mDecodeThreadStart = true;
+
+            maybeStartScan();
         }
     }
 
     private void quitDecodeThread() {
+        if (mDecodeThread == null) {
+            return;
+        }
         mDecodeThread.stopThreadSafely();
         try {
             mDecodeThread.join();
         } catch (InterruptedException e) {
         }
         mDecodeThread = null;
+        mDecodeThreadStart = false;
     }
 
     private void destroyCamera() {
